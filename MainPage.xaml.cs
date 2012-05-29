@@ -35,7 +35,8 @@ namespace PaintApp
 
             Line line = new Line() { X1 = currentPoint.X, Y1 = currentPoint.Y, X2 = oldPoint.X, Y2 = oldPoint.Y };
             line.Stroke = new SolidColorBrush(Colors.Blue);
-            line.StrokeThickness = 15;
+            line.StrokeThickness = 8;
+            line.StrokeStartLineCap = PenLineCap.Round;
 
             this.canvas1.Children.Add(line);
             oldPoint = currentPoint;
