@@ -8,10 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
-    FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True" Loaded="PhoneApplicationPage_Loaded">
+    FontSize="{StaticResource PhoneFontSizeNormal}" SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True" Loaded="PhoneApplicationPage_Loaded" Foreground="White" VerticalAlignment="Top" VerticalContentAlignment="Stretch">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
@@ -23,7 +21,12 @@
         <!--TitlePanel contains the name of the application and page title-->
         <!--ContentPanel - place additional content here-->
         <Canvas Grid.Row="1" Height="701" HorizontalAlignment="Left" Margin="0,67,0,0" Name="canvas1" VerticalAlignment="Top" Width="480" Background="Transparent" MouseLeftButtonDown="canvas1_MouseLeftButtonDown"></Canvas>
-        <Button Content="Clear" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="12,0,0,0" Name="clearButton" VerticalAlignment="Top" Width="160" Background="Black" Click="clearButton_Click" />
+        <Button Content="Clear" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="12,0,0,0" Name="clearButton" VerticalAlignment="Top" Width="114" Background="Black" Click="clearButton_Click" />
+        <Button Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="114,0,0,0" Name="button1" VerticalAlignment="Top" Width="71" Background="Blue" Foreground="White" VerticalContentAlignment="Top" Click="button1_Click" />
+        <Button Background="Lime" Foreground="White" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="176,0,0,0" Name="button2" VerticalAlignment="Top" VerticalContentAlignment="Top" Width="71" Click="button2_Click" />
+        <Button Background="Red" Foreground="White" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="233,0,0,0" Name="button3" VerticalAlignment="Top" VerticalContentAlignment="Top" Width="71" Click="button3_Click" />
+        <Button Background="Yellow" Foreground="White" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="291,0,0,0" Name="button4" VerticalAlignment="Top" VerticalContentAlignment="Top" Width="71" Click="button4_Click" />
+        <Button Background="Black" Foreground="White" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="347,0,0,0" Name="button5" VerticalAlignment="Top" VerticalContentAlignment="Top" Width="71" Click="button5_Click" />
     </Grid>
  
     <!--Sample code showing usage of ApplicationBar-->
