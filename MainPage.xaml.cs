@@ -18,26 +18,22 @@ namespace PaintApp
         private Point currentPoint;
         private Point oldPoint;
         private Line line;
-        private SolidColorBrush scb;
+
         // Constructor
         public MainPage()
         {
             InitializeComponent();
             this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
-            scb = new SolidColorBrush(Colors.Black);
+            Globals.scb = new SolidColorBrush(Colors.Black);
         }
 
-        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
-        {
-           
-        }
         void canvas1_MouseMove(object sender, MouseEventArgs e)
         {
             currentPoint = e.GetPosition(this.canvas1);
 
             line = new Line() { X1 = currentPoint.X, Y1 = currentPoint.Y, X2 = oldPoint.X, Y2 = oldPoint.Y };
-            line.Stroke = scb;
+            line.Stroke = Globals.scb;
             line.StrokeThickness = 8;
             line.StrokeStartLineCap = PenLineCap.Round;
 
@@ -51,34 +47,44 @@ namespace PaintApp
             oldPoint = currentPoint;
         }
 
-        private void clearButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.canvas1.Children.Clear();
-        }
-
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            scb = new SolidColorBrush(Colors.Blue);
+            Globals.scb = new SolidColorBrush(Colors.Blue);
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            scb = new SolidColorBrush(Colors.Green);
+            Globals.scb = new SolidColorBrush(Colors.Green);
         }
 
         private void button3_Click(object sender, RoutedEventArgs e)
         {
-            scb = new SolidColorBrush(Colors.Red);
+            Globals.scb = new SolidColorBrush(Colors.Red);
         }
 
         private void button4_Click(object sender, RoutedEventArgs e)
         {
-            scb = new SolidColorBrush(Colors.Yellow);
+            Globals.scb = new SolidColorBrush(Colors.Yellow);
         }
 
         private void button5_Click(object sender, RoutedEventArgs e)
         {
-            scb = new SolidColorBrush(Colors.Black);
+            Globals.scb = new SolidColorBrush(Colors.Black);
+        }
+
+        private void button1_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.canvas1.Children.Clear();
+        }
+
+        private void button2_Click_1(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
+        }
+
+        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            button2.Background = Globals.scb;
         }
     }
 }
