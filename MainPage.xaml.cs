@@ -47,5 +47,10 @@ namespace PaintApp
             currentPoint = e.GetPosition(canvas1);
             oldPoint = currentPoint;
         }
+
+        private void clearButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.canvas1.Children.Clear();
+        }
     }
 }

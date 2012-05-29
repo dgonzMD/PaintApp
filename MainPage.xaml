@@ -23,6 +23,7 @@
         <!--TitlePanel contains the name of the application and page title-->
         <!--ContentPanel - place additional content here-->
         <Canvas Grid.Row="1" Height="701" HorizontalAlignment="Left" Margin="0,67,0,0" Name="canvas1" VerticalAlignment="Top" Width="480" Background="Transparent" MouseLeftButtonDown="canvas1_MouseLeftButtonDown"></Canvas>
+        <Button Content="Clear" Grid.Row="1" Height="72" HorizontalAlignment="Left" Margin="12,0,0,0" Name="clearButton" VerticalAlignment="Top" Width="160" Background="Black" Click="clearButton_Click" />
     </Grid>
  
     <!--Sample code showing usage of ApplicationBar-->
