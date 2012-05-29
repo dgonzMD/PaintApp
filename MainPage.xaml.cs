@@ -15,32 +15,36 @@ namespace PaintApp
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        private Point currentPoint;
+        private Point oldPoint;
         // Constructor
         public MainPage()
         {
             InitializeComponent();
+            this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
+            this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            Line line = new Line();
-            line.Stroke = new SolidColorBrush(Colors.Purple);
+           
+        }
+        void canvas1_MouseMove(object sender, MouseEventArgs e)
+        {
+            currentPoint = e.GetPosition(this.canvas1);
+
+            Line line = new Line() { X1 = currentPoint.X, Y1 = currentPoint.Y, X2 = oldPoint.X, Y2 = oldPoint.Y };
+            line.Stroke = new SolidColorBrush(Colors.Blue);
             line.StrokeThickness = 15;
 
-            Point point1 = new Point();
-            point1.X = 10.0;
-            point1.Y = 100.0;
+            this.canvas1.Children.Add(line);
+            oldPoint = currentPoint;
+        }
 
-            Point point2 = new Point();
-            point2.X = 150.0;
-            point2.Y = 100.0;
-
-            line.X1 = point1.X;
-            line.Y1 = point1.Y;
-            line.X2 = point2.X;
-            line.Y2 = point2.Y;
-
-            canvas1.Children.Add(line);
+        void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            currentPoint = e.GetPosition(canvas1);
+            oldPoint = currentPoint;
         }
     }
 }
