@@ -58,7 +58,7 @@ namespace PaintApp
             {
                 fillColor = bm.GetPixel((int)currentPoint.X, (int)currentPoint.Y);
                 seen = new bool[bm.PixelWidth, bm.PixelHeight];
-                flood(currentPoint);
+      //          flood(currentPoint);
             }
         }
         private void button1_Click_1(object sender, RoutedEventArgs e)
@@ -83,6 +83,8 @@ namespace PaintApp
         {
             int x;
             int y;
+            bm.SetPixel((int)p.X, (int)p.Y, fillColor);
+            
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                 {
