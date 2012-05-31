@@ -104,20 +104,24 @@ namespace PaintApp
         private bool isValid(short i, short j)
         { return i>=0 && i<bm.PixelWidth && j>=0 && j<bm.PixelHeight; } 
 
-        private void flood(iPoint p, Color fillColor, Color interiorColor)
+        private void flood(iPoint init, Color fillColor, Color interiorColor)
         {
             if (fillColor == interiorColor) return;
 
-            Queue<iPoint> q = new Queue<iPoint>();
-            q.Enqueue(p);
-            bm.SetPixel(p.x, p.y, fillColor);
+            iPoint[] q = new iPoint[(int)(canvas1.Width * canvas1.Height)];
+            int len = 0;
+
+            q[len] = init;
+            len++;
+            bm.SetPixel(init.x, init.y, fillColor);
 
             short[] di = { -1, -1, -1, 0, 1, 1, 1, 0 };
             short[] dj = { -1, 0, 1, 1, 1, 0, -1, -1 };
 
-            while (q.Count > 0)
+            while (len > 0)
             {
-                p = q.Dequeue();
+                iPoint p = q[len-1];
+                len--;
 
                 for (int i = 0; i < 8; i++)
                 {
@@ -125,7 +129,8 @@ namespace PaintApp
                     short y = (short)(p.y + dj[i]);
                     if (isValid(x, y) && interiorColor == bm.GetPixel(x, y))
                     {
-                        q.Enqueue(new iPoint(x, y));
+                        q[len] = new iPoint(x, y);
+                        len++;
                         bm.SetPixel(x, y, fillColor);
                     }
                 }
