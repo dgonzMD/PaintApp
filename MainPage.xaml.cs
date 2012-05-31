@@ -59,7 +59,6 @@ namespace PaintApp
             
             //Uri uri = new Uri("images/temp1.png", UriKind.Relative); //dunno why this is here
             //ImageSource img = bm;
-            canvas1.t
             flood(currentPoint);
             bm.Invalidate();
 
