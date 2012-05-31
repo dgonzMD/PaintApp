@@ -58,7 +58,15 @@ namespace PaintApp
             Image image = new Image();
             bm = new WriteableBitmap(canvas1, null);
             //Uri uri = new Uri("images/temp1.png", UriKind.Relative); //dunno why this is here
+<<<<<<< HEAD
             ImageSource img = bm;
+=======
+            //ImageSource img = bm;
+            flood(currentPoint);
+            bm.Invalidate();
+
+            Image image = new Image();
+>>>>>>> 67cd480fdde923beb375cd43567c8f8949d8bd0a
             image.SetValue(Image.SourceProperty, bm);
 
             flood(p, Globals.scb.Color, bm.GetPixel((int)p.X, (int)p.Y));
