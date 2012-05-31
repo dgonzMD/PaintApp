@@ -16,9 +16,8 @@ namespace PaintApp
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private Point p;
-        private Point prev_p;
-        private Line line;
+        private iPoint cur_p = new iPoint(0,0);
+        private iPoint prev_p = new iPoint(0,0);
         private bool fill = false;
         private WriteableBitmap bm;
 
@@ -35,44 +34,41 @@ namespace PaintApp
         {
             if (fill) return;
 
-            p = e.GetPosition(this.canvas1);
-            line = new Line() { X1 = p.X, Y1 = p.Y, X2 = prev_p.X, Y2 = prev_p.Y };
+            cur_p = new iPoint(e.GetPosition(this.canvas1));
+            Line line = new Line() { X1 = cur_p.x, Y1 = cur_p.y, X2 = prev_p.x, Y2 = prev_p.y };
             line.Stroke = Globals.scb;
             line.StrokeThickness = 8;
             line.StrokeStartLineCap = PenLineCap.Round;
 
             this.canvas1.Children.Add(line);
-            prev_p = p;
+            prev_p = cur_p;
         }
 
         void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            p = e.GetPosition(canvas1);
-            prev_p = p;         
+            cur_p.x = (int)e.GetPosition(canvas1).X;
+            cur_p.y = (int)e.GetPosition(canvas1).Y;
+
+            prev_p = cur_p;         
         }
         void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (!fill) return;
 
-            p = e.GetPosition(canvas1);
+            cur_p.x  = (int)e.GetPosition(canvas1).X;
+            cur_p.y = (int)e.GetPosition(canvas1).Y;
+
             Image image = new Image();
             bm = new WriteableBitmap(canvas1, null);
-            //Uri uri = new Uri("images/temp1.png", UriKind.Relative); //dunno why this is here
-<<<<<<< HEAD
-            ImageSource img = bm;
-=======
-            //ImageSource img = bm;
-            flood(currentPoint);
-            bm.Invalidate();
 
-            Image image = new Image();
->>>>>>> 67cd480fdde923beb375cd43567c8f8949d8bd0a
+            ImageSource img = bm;
             image.SetValue(Image.SourceProperty, bm);
 
-            flood(p, Globals.scb.Color, bm.GetPixel((int)p.X, (int)p.Y));
+            flood(cur_p, Globals.scb.Color, bm.GetPixel((int)cur_p.x, (int)cur_p.y));
             bm.Invalidate();
             this.canvas1.Children.Add(image);
         }
+
         private void button1_Click_1(object sender, RoutedEventArgs e)
         {
             this.canvas1.Children.Clear();
@@ -100,13 +96,13 @@ namespace PaintApp
         private bool isValid(int i, int j)
         { return i>=0 && i<bm.PixelWidth && j>=0 && j<bm.PixelHeight; } 
 
-        private void flood(Point p, Color fillColor, Color interiorColor)
+        private void flood(iPoint p, Color fillColor, Color interiorColor)
         {
             if (fillColor == interiorColor) return;
 
-            Queue<Point> q = new Queue<Point>();
+            Queue<iPoint> q = new Queue<iPoint>();
             q.Enqueue(p);
-            bm.SetPixel((int)p.X, (int)p.Y, fillColor);
+            bm.SetPixel(p.x, p.y, fillColor);
 
             int[] di = { -1, -1, -1, 0, 1, 1, 1, 0 };
             int[] dj = { -1, 0, 1, 1, 1, 0, -1, -1 };
@@ -117,17 +113,25 @@ namespace PaintApp
 
                 for (int i = 0; i < 8; i++)
                 {
-                    int x = (int)p.X + di[i];
-                    int y = (int)p.Y + dj[i];
+                    int x = p.x + di[i];
+                    int y = p.y + dj[i];
                     if (isValid(x, y) && interiorColor == bm.GetPixel(x, y))
                     {
-                        q.Enqueue(new Point(x, y));
-                        bm.SetPixel(x, y, Globals.scb.Color);
+                        q.Enqueue(new iPoint(x, y));
+                        bm.SetPixel(x, y, fillColor);
                     }
                 }
             }
-
-
         }
     }
+}
+
+class iPoint
+{
+    public int x, y; // can possibly use shorts
+    public iPoint(int X, int Y)
+    { x = X; y = Y; }
+
+    public iPoint(Point p)
+    { x = (int)p.X; y = (int)p.Y; }
 }
