@@ -30,7 +30,9 @@ namespace PaintApp
             this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
             Globals.scb = new SolidColorBrush(Colors.Black);
-            bm = new System.Windows.Media.Imaging.WriteableBitmap(rectangle1, null);
+            bm = new WriteableBitmap(rectangle1,null);
+            bm.Clear(Colors.Blue);
+
             fill = false;
         }
 
@@ -52,8 +54,9 @@ namespace PaintApp
             currentPoint = e.GetPosition(canvas1);
             oldPoint = currentPoint;         
         }
-        private void canvas1_Tap(object sender, GestureEventArgs e)
+        void canvas1_Tap(object sender, GestureEventArgs e)
         {
+            currentPoint = e.GetPosition(canvas1);
             if (fill)
             {
                 fillColor = bm.GetPixel((int)currentPoint.X, (int)currentPoint.Y);
@@ -83,21 +86,20 @@ namespace PaintApp
         {
             int x;
             int y;
-            bm.SetPixel((int)p.X, (int)p.Y, fillColor);
+            bm.SetPixel((int)p.X, (int)p.Y, Globals.scb.Color);
             
             for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                {
-                    x = (int)p.X + Globals.di[i];
-                    y = (int)p.Y + Globals.dj[j];
-                    if (x > 0 && x < bm.PixelWidth && y > 0 && y < bm.PixelHeight)
-                        if (!seen[x, y])
-                            if (fillColor == bm.GetPixel(x, y))
-                            {
-                                seen[x, y] = true;
-                                flood(new Point(p.X + Globals.di[i], p.Y + Globals.dj[j]));
-                            }
-                }
+            {
+                x = (int)p.X + Globals.di[i];
+                y = (int)p.Y + Globals.dj[i];
+                if (x > 0 && x < bm.PixelWidth && y > 0 && y < bm.PixelHeight)
+                    if (!seen[x, y])
+                        if (fillColor == bm.GetPixel(x, y))
+                        {
+                            seen[x, y] = true;
+                            flood(new Point(p.X + Globals.di[i], p.Y + Globals.dj[i]));
+                        }
+            }
         }
     }
 }
