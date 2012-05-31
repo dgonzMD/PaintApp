@@ -101,36 +101,29 @@ namespace PaintApp
                 button3.Content = "Pen";
         }
 
-        private bool isValid(short i, short j)
-        { return i>=0 && i<bm.PixelWidth && j>=0 && j<bm.PixelHeight; } 
-
-        private void flood(iPoint init, Color fillColor, Color interiorColor)
+        private void flood(iPoint p, Color fillColor, Color interiorColor)
         {
             if (fillColor == interiorColor) return;
 
-            iPoint[] q = new iPoint[(int)(canvas1.Width * canvas1.Height)];
-            int len = 0;
+            Queue<iPoint> q = new Queue<iPoint>();
+            q.Enqueue(p);
+            bm.SetPixel(p.x, p.y, fillColor);
 
-            q[len] = init;
-            len++;
-            bm.SetPixel(init.x, init.y, fillColor);
+            short[] di = { -1, 0, 0, 1 };
+            short[] dj = { 0, 1, -1, 0 };
 
-            short[] di = { -1, -1, -1, 0, 1, 1, 1, 0 };
-            short[] dj = { -1, 0, 1, 1, 1, 0, -1, -1 };
-
-            while (len > 0)
+            while (q.Count > 0)
             {
-                iPoint p = q[len-1];
-                len--;
+                p = q.Dequeue();
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     short x = (short)(p.x + di[i]);
                     short y = (short)(p.y + dj[i]);
-                    if (isValid(x, y) && interiorColor == bm.GetPixel(x, y))
+
+                    if (x>=0 && x<bm.PixelWidth && y>=0 && y<bm.PixelHeight && interiorColor == bm.GetPixel(x, y))
                     {
-                        q[len] = new iPoint(x, y);
-                        len++;
+                        q.Enqueue(new iPoint(x, y));
                         bm.SetPixel(x, y, fillColor);
                     }
                 }
