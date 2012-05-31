@@ -54,6 +54,7 @@ namespace PaintApp
         void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (!fill) return;
+            long before = DateTime.Now.Ticks;           
 
             cur_p.x  = (short)e.GetPosition(canvas1).X;
             cur_p.y = (short)e.GetPosition(canvas1).Y;
@@ -67,6 +68,13 @@ namespace PaintApp
             flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
             bm.Invalidate();
             this.canvas1.Children.Add(image);
+
+            long after = DateTime.Now.Ticks;
+
+            TimeSpan elapsedTime = new TimeSpan(after - before);
+            MessageBox.Show(string.Format("Task took {0} milliseconds",
+                elapsedTime.TotalMilliseconds));
+
         }
 
         private void button1_Click_1(object sender, RoutedEventArgs e)
