@@ -46,8 +46,8 @@ namespace PaintApp
 
         void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            cur_p.x = (int)e.GetPosition(canvas1).X;
-            cur_p.y = (int)e.GetPosition(canvas1).Y;
+            cur_p.x = (short)e.GetPosition(canvas1).X;
+            cur_p.y = (short)e.GetPosition(canvas1).Y;
 
             prev_p = cur_p;         
         }
@@ -55,8 +55,8 @@ namespace PaintApp
         {
             if (!fill) return;
 
-            cur_p.x  = (int)e.GetPosition(canvas1).X;
-            cur_p.y = (int)e.GetPosition(canvas1).Y;
+            cur_p.x  = (short)e.GetPosition(canvas1).X;
+            cur_p.y = (short)e.GetPosition(canvas1).Y;
 
             Image image = new Image();
             bm = new WriteableBitmap(canvas1, null);
@@ -64,7 +64,7 @@ namespace PaintApp
             ImageSource img = bm;
             image.SetValue(Image.SourceProperty, bm);
 
-            flood(cur_p, Globals.scb.Color, bm.GetPixel((int)cur_p.x, (int)cur_p.y));
+            flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
             bm.Invalidate();
             this.canvas1.Children.Add(image);
         }
@@ -93,7 +93,7 @@ namespace PaintApp
                 button3.Content = "Pen";
         }
 
-        private bool isValid(int i, int j)
+        private bool isValid(short i, short j)
         { return i>=0 && i<bm.PixelWidth && j>=0 && j<bm.PixelHeight; } 
 
         private void flood(iPoint p, Color fillColor, Color interiorColor)
@@ -104,8 +104,8 @@ namespace PaintApp
             q.Enqueue(p);
             bm.SetPixel(p.x, p.y, fillColor);
 
-            int[] di = { -1, -1, -1, 0, 1, 1, 1, 0 };
-            int[] dj = { -1, 0, 1, 1, 1, 0, -1, -1 };
+            short[] di = { -1, -1, -1, 0, 1, 1, 1, 0 };
+            short[] dj = { -1, 0, 1, 1, 1, 0, -1, -1 };
 
             while (q.Count > 0)
             {
@@ -113,8 +113,8 @@ namespace PaintApp
 
                 for (int i = 0; i < 8; i++)
                 {
-                    int x = p.x + di[i];
-                    int y = p.y + dj[i];
+                    short x = (short)(p.x + di[i]);
+                    short y = (short)(p.y + dj[i]);
                     if (isValid(x, y) && interiorColor == bm.GetPixel(x, y))
                     {
                         q.Enqueue(new iPoint(x, y));
@@ -128,10 +128,10 @@ namespace PaintApp
 
 class iPoint
 {
-    public int x, y; // can possibly use shorts
-    public iPoint(int X, int Y)
+    public short x, y; // can possibly use shorts
+    public iPoint(short X, short Y)
     { x = X; y = Y; }
 
     public iPoint(Point p)
-    { x = (int)p.X; y = (int)p.Y; }
+    { x = (short)p.X; y = (short)p.Y; }
 }
