@@ -33,6 +33,8 @@ namespace PaintApp
 
         void canvas1_MouseMove(object sender, MouseEventArgs e)
         {
+            if (fill) return;
+
             currentPoint = e.GetPosition(this.canvas1);
             line = new Line() { X1 = currentPoint.X, Y1 = currentPoint.Y, X2 = oldPoint.X, Y2 = oldPoint.Y };
             line.Stroke = Globals.scb;
@@ -41,7 +43,6 @@ namespace PaintApp
 
             this.canvas1.Children.Add(line);
             oldPoint = currentPoint;
-            fill = false;
         }
 
         void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -54,19 +55,14 @@ namespace PaintApp
             if (!fill) return;
 
             currentPoint = e.GetPosition(canvas1);
-
-            bm = new WriteableBitmap(canvas1, null);
-            
-            //Uri uri = new Uri("images/temp1.png", UriKind.Relative); //dunno why this is here
-            //ImageSource img = bm;
-            canvas1.t
-            flood(currentPoint);
-            bm.Invalidate();
-
             Image image = new Image();
+            bm = new WriteableBitmap(canvas1, null);
+            //Uri uri = new Uri("images/temp1.png", UriKind.Relative); //dunno why this is here
+            ImageSource img = bm;
             image.SetValue(Image.SourceProperty, bm);
 
-            
+            flood(currentPoint);
+            bm.Invalidate();
             this.canvas1.Children.Add(image);
         }
         private void button1_Click_1(object sender, RoutedEventArgs e)
@@ -94,7 +90,7 @@ namespace PaintApp
         }
 
         private bool isValid(int i, int j)
-        { return i>0 && i<bm.PixelWidth && j>0 && j<bm.PixelWidth; } //WHY is it not <= 0 ???
+        { return i>=0 && i<bm.PixelWidth && j>=0 && j<bm.PixelHeight; } 
 
         private void flood(Point p)
         {
