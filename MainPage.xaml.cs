@@ -19,10 +19,9 @@ namespace PaintApp
         private Point currentPoint;
         private Point oldPoint;
         private Line line;
-        private bool fill;
-        private bool[,] seen;
-        private Color fillColor;
+        private bool fill = false;
         private WriteableBitmap bm;
+
         // Constructor
         public MainPage()
         {
@@ -30,8 +29,6 @@ namespace PaintApp
             this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
             Globals.scb = new SolidColorBrush(Colors.Black);
-       
-            fill = false;
         }
 
         void canvas1_MouseMove(object sender, MouseEventArgs e)
@@ -54,24 +51,22 @@ namespace PaintApp
         }
         void canvas1_Tap(object sender, GestureEventArgs e)
         {
+            if (!fill) return;
+
             currentPoint = e.GetPosition(canvas1);
 
             bm = new WriteableBitmap(canvas1, null);
-            Image image = new Image();
-            Uri uri = new Uri("images/temp1.png", UriKind.Relative);
-            ImageSource img = bm;
-            image.SetValue(Image.SourceProperty, img);
-
-            if (fill)
-            {
-                fillColor = bm.GetPixel((int)currentPoint.X, (int)currentPoint.Y);
-                seen = new bool[bm.PixelWidth, bm.PixelHeight];
- //               flood(currentPoint);
-            }
-
-            bm.SetPixel((int)currentPoint.X, (int)currentPoint.Y, Globals.scb.Color); //remove this, was just testing if bm functions were working
-
+            
+            //Uri uri = new Uri("images/temp1.png", UriKind.Relative); //dunno why this is here
+            //ImageSource img = bm;
+            canvas1.t
+            flood(currentPoint);
             bm.Invalidate();
+
+            Image image = new Image();
+            image.SetValue(Image.SourceProperty, bm);
+
+            
             this.canvas1.Children.Add(image);
         }
         private void button1_Click_1(object sender, RoutedEventArgs e)
@@ -88,27 +83,40 @@ namespace PaintApp
         {
             button2.Background = Globals.scb;
         }
+
         private void fillButton_Click(object sender, RoutedEventArgs e)
         {
-            fill = true;
+            fill ^= true;
+            if (fill)
+                button3.Content = "Fill";
+            else
+                button3.Content = "Pen";
         }
+
+        private bool isValid(int i, int j)
+        { return i>0 && i<bm.PixelWidth && j>0 && j<bm.PixelWidth; } //WHY is it not <= 0 ???
+
         private void flood(Point p)
         {
-            int x;
-            int y;
+            Queue<Point> q = new Queue<Point>();
+            q.Enqueue(p);
+            Color toReplace = bm.GetPixel((int)p.X, (int)p.Y);
             bm.SetPixel((int)p.X, (int)p.Y, Globals.scb.Color);
-            
-            for (int i = 0; i < 8; i++)
+
+            while (q.Count > 0)
             {
-                x = (int)p.X + Globals.di[i];
-                y = (int)p.Y + Globals.dj[i];
-                if (x > 0 && x < bm.PixelWidth && y > 0 && y < bm.PixelHeight)
-                    if (!seen[x, y])
-                        if (fillColor == bm.GetPixel(x, y))
-                        {
-                            seen[x, y] = true;
-                            flood(new Point(p.X + Globals.di[i], p.Y + Globals.dj[i]));
-                        }
+                p = q.Dequeue();
+
+                for (int i = 0; i < 8; i++)
+                {
+                    int x = (int)p.X + Globals.di[i];
+                    int y = (int)p.Y + Globals.dj[i];
+                    if (isValid(x, y) && toReplace == bm.GetPixel(x, y))
+                    {
+                        q.Enqueue(new Point(x, y));
+                        bm.SetPixel(x, y, Globals.scb.Color);
+                    }
+                }
             }
         }
     }
