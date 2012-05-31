@@ -21,13 +21,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <!--ContentPanel - place additional content here-->
-        <Canvas Grid.Row="1" Height="671" HorizontalAlignment="Left" Name="canvas1" VerticalAlignment="Top" Width="480" Background="White" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap">
-            <Rectangle Canvas.Left="0" Canvas.Top="0" Height="671" Stroke="Black" StrokeThickness="1" Width="480" HorizontalAlignment="Left" VerticalAlignment="Top" Name="rectangle1">
-                <Rectangle.Fill>
-                    <SolidColorBrush />
-                </Rectangle.Fill>
-            </Rectangle>
-        </Canvas>
+        <Canvas Grid.Row="1" Height="671" HorizontalAlignment="Left" Name="canvas1" VerticalAlignment="Top" Width="480" Background="White" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap"></Canvas>
         
         <TextBlock Grid.Row="1" Height="30" HorizontalAlignment="Left" Margin="22,702,0,0" Name="textBlock1" Text="Color" VerticalAlignment="Top" Width="68" />
         <Button Content="Clear" Grid.Row="1" Height="78" HorizontalAlignment="Right" Margin="0,678,43,0" Name="button1" VerticalAlignment="Top" Width="165" Click="button1_Click_1" />

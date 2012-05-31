@@ -30,9 +30,7 @@ namespace PaintApp
             this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
             Globals.scb = new SolidColorBrush(Colors.Black);
-            bm = new WriteableBitmap(rectangle1,null);
-            bm.Clear(Colors.Blue);
-
+       
             fill = false;
         }
 
@@ -57,12 +55,24 @@ namespace PaintApp
         void canvas1_Tap(object sender, GestureEventArgs e)
         {
             currentPoint = e.GetPosition(canvas1);
+
+            bm = new WriteableBitmap(canvas1, null);
+            Image image = new Image();
+            Uri uri = new Uri("images/temp1.png", UriKind.Relative);
+            ImageSource img = bm;
+            image.SetValue(Image.SourceProperty, img);
+
             if (fill)
             {
                 fillColor = bm.GetPixel((int)currentPoint.X, (int)currentPoint.Y);
                 seen = new bool[bm.PixelWidth, bm.PixelHeight];
-      //          flood(currentPoint);
+ //               flood(currentPoint);
             }
+
+            bm.SetPixel((int)currentPoint.X, (int)currentPoint.Y, Globals.scb.Color); //remove this, was just testing if bm functions were working
+
+            bm.Invalidate();
+            this.canvas1.Children.Add(image);
         }
         private void button1_Click_1(object sender, RoutedEventArgs e)
         {
