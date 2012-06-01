@@ -7,10 +7,9 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
-    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    mc:Ignorable="d" FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}" SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True" Foreground="White" VerticalAlignment="Top" VerticalContentAlignment="Stretch" Loaded="PhoneApplicationPage_Loaded">
+    shell:SystemTray.IsVisible="True" Foreground="White" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Loaded="PhoneApplicationPage_Loaded" d:DesignHeight="696" d:DesignWidth="480" HorizontalContentAlignment="Stretch">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -21,20 +20,17 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <!--ContentPanel - place additional content here-->
-        <Canvas Grid.Row="1" Height="671" HorizontalAlignment="Left" Name="canvas1" VerticalAlignment="Top" Width="480" Background="White" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap" MouseLeftButtonUp="canvas1_MouseLeftButtonUp"></Canvas>
-        <Button Content="Clear" Grid.Row="1" Height="78" HorizontalAlignment="Right" Margin="0,678,99,0" Name="button1" VerticalAlignment="Top" Width="108" Click="button1_Click_1" />
-        <Button Grid.Row="1" Height="78" HorizontalAlignment="Left" Margin="0,678,0,0" Name="button2" VerticalAlignment="Top" Width="82" Click="button2_Click_1" />
-        <Button Content="Pen" Grid.Row="1" Height="78" HorizontalAlignment="Left" Margin="67,678,0,0" Name="button3" VerticalAlignment="Top" Width="110" Click="fillButton_Click" />
-        <Button Content="Save" Name="button4" Margin="373,678,0,12" Grid.Row="1" Click="button4_Click" />
-        <Button Content="Undo" Name="button5" Margin="168,678,202,12" Grid.Row="1" Click="button5_Click" />
+        <Canvas Grid.Row="1" HorizontalAlignment="Stretch" Name="canvas1" VerticalAlignment="Stretch" Background="White" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap" MouseLeftButtonUp="canvas1_MouseLeftButtonUp" Height="671" Width="480"></Canvas>
     </Grid>
- 
-    <!--Sample code showing usage of ApplicationBar-->
-    <!--<phone:PhoneApplicationPage.ApplicationBar>
+    <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/settings.png" Text="Colors" Click="AppBarSettings"/>
-            <shell:ApplicationBarIconButton IconUri="/Images/delete.png" Text="Clear" Click="AppBarClear"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/brush.png" Text="Colors" Click="clearClick" />
+            <shell:ApplicationBarIconButton IconUri="/Images/beer.png" Text="Fill" Click="fillClick" />
+            <shell:ApplicationBarIconButton IconUri="/Images/undo.png" Text="Undo" Click="undoClick" />
+            <shell:ApplicationBarIconButton IconUri="/Images/delete.png" Text="Clear" Click="clearClick" />
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>-->
+    </phone:PhoneApplicationPage.ApplicationBar>
 
+    <!--Sample code showing usage of ApplicationBar-->
+    
 </phone:PhoneApplicationPage>

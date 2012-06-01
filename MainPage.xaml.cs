@@ -113,7 +113,7 @@ namespace PaintApp
             toast.Show();
         }
 
-        private void button1_Click_1(object sender, RoutedEventArgs e)
+        private void clearClick(object sender, EventArgs e)
         {
             undoCanvas = new Canvas();
             while (canvas1.Children.Count > 0)
@@ -124,24 +124,24 @@ namespace PaintApp
             }
         }
 
-        private void button2_Click_1(object sender, RoutedEventArgs e)
+        private void colorClick(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            button2.Background = Globals.scb;
+  //          button2.Background = Globals.scb;
         }
 
-        private void fillButton_Click(object sender, RoutedEventArgs e)
+        private void fillClick(object sender, EventArgs e)
         {
             fillModeOn ^= true;
-            if (fillModeOn)
+ /*           if (fillModeOn)
                 button3.Content = "Fill";
             else
                 button3.Content = "Pen";
-        }
+ */       }
 
         //From http://en.wikipedia.org/wiki/Hue
         private double sqrt3 = Math.Sqrt(3.0);
@@ -207,7 +207,7 @@ namespace PaintApp
         }
 
         //Save Button
-        private void button4_Click(object sender, RoutedEventArgs e)
+        private void saveClick(object sender, EventArgs e)
         {
             saveFile();
             //MessageBox.Show("File Saved."); //removed, the ToastPrompts look better
@@ -223,7 +223,7 @@ namespace PaintApp
             toast.Show();
         }
 
-        private void button5_Click(object sender, RoutedEventArgs e) //Undo button
+        private void undoClick(object sender, EventArgs e) //Undo button
         {
             if (undoCanvas == null) return; //Can't undo
 
