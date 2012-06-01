@@ -26,6 +26,7 @@ namespace PaintApp
         private iPoint prev_p = new iPoint(0,0);
         private bool fillModeOn = false;
         private WriteableBitmap bm;
+        private Canvas undoCanvas = null;
         private IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication(); //Used in save
 
         // Constructor
@@ -58,17 +59,27 @@ namespace PaintApp
 
             prev_p = cur_p;         
         }
+
         void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (!fillModeOn) return;
-            long before = DateTime.Now.Ticks;           
+            long before = DateTime.Now.Ticks;
+
+            bm = new WriteableBitmap(canvas1, null);
+
+            undoCanvas = new Canvas();
+            undoCanvas.Children.Clear();
+            while (canvas1.Children.Count > 0)
+            {
+                UIElement child = canvas1.Children[0];
+                canvas1.Children.RemoveAt(0);
+                undoCanvas.Children.Add(child);
+            }
 
             cur_p.x  = (short)e.GetPosition(canvas1).X;
             cur_p.y = (short)e.GetPosition(canvas1).Y;
 
             Image image = new Image();
-            bm = new WriteableBitmap(canvas1, null);
-
             ImageSource img = bm;
             image.SetValue(Image.SourceProperty, bm);
 
@@ -76,10 +87,9 @@ namespace PaintApp
             bm.Invalidate();
             this.canvas1.Children.Add(image);
 
+            //Used to measure performance
             long after = DateTime.Now.Ticks;
-
             TimeSpan elapsedTime = new TimeSpan(after - before);
-
             ToastPrompt toast = new ToastPrompt();
             toast.MillisecondsUntilHidden = 1000;
             toast.Title = "Time: ";
@@ -88,8 +98,6 @@ namespace PaintApp
             toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
             toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
             toast.Show();
-
-
         }
 
         private void button1_Click_1(object sender, RoutedEventArgs e)
@@ -161,7 +169,7 @@ namespace PaintApp
             fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
 
             MediaLibrary mediaLibrary = new MediaLibrary();
-            Picture pic = mediaLibrary.SavePicture("testPic.jpg", fileStream);
+            Picture pic = mediaLibrary.SavePicture("paint_img.jpg", fileStream);
             fileStream.Close();            
         }
 
@@ -181,7 +189,23 @@ namespace PaintApp
             toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
             toast.Show();
         }
-        
+
+        private void button5_Click(object sender, RoutedEventArgs e) //Undo button
+        {
+            if (undoCanvas == null) return; //Can't undo
+
+            //System.Diagnostics.Debug.WriteLine("undo-ing!!!!!!!"); //save to remove
+
+            canvas1.Children.Clear();
+            while (undoCanvas.Children.Count > 0)
+            {
+                UIElement child = undoCanvas.Children[0];
+                undoCanvas.Children.RemoveAt(0);
+                canvas1.Children.Add(child);
+            }
+
+            undoCanvas = null;
+        }
     }
 }
 
