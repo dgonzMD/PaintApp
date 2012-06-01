@@ -25,6 +25,7 @@ namespace PaintApp
         private iPoint cur_p = new iPoint(0,0);
         private iPoint prev_p = new iPoint(0,0);
         private bool fillModeOn = false;
+        private bool activelyDrawing = false;
         private WriteableBitmap bm;
         private Canvas undoCanvas = null;
         private IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication(); //Used in save
@@ -54,6 +55,19 @@ namespace PaintApp
 
         void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (!activelyDrawing) //just started to draw, save state first (in order to undo)
+            {
+                undoCanvas = new Canvas();
+
+                bm = new WriteableBitmap(canvas1, null);
+                Image image = new Image();
+                ImageSource img = bm;
+                image.SetValue(Image.SourceProperty, bm);
+                undoCanvas.Children.Add(image);
+
+                activelyDrawing = true;
+            }
+
             cur_p.x = (short)e.GetPosition(canvas1).X;
             cur_p.y = (short)e.GetPosition(canvas1).Y;
 
@@ -68,7 +82,6 @@ namespace PaintApp
             bm = new WriteableBitmap(canvas1, null);
 
             undoCanvas = new Canvas();
-            undoCanvas.Children.Clear();
             while (canvas1.Children.Count > 0)
             {
                 UIElement child = canvas1.Children[0];
@@ -102,7 +115,13 @@ namespace PaintApp
 
         private void button1_Click_1(object sender, RoutedEventArgs e)
         {
-            this.canvas1.Children.Clear();
+            undoCanvas = new Canvas();
+            while (canvas1.Children.Count > 0)
+            {
+                UIElement ele = canvas1.Children[0];
+                canvas1.Children.RemoveAt(0);
+                undoCanvas.Children.Add(ele);
+            }
         }
 
         private void button2_Click_1(object sender, RoutedEventArgs e)
@@ -205,6 +224,11 @@ namespace PaintApp
             }
 
             undoCanvas = null;
+        }
+
+        private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            activelyDrawing = false;
         }
     }
 }
