@@ -143,6 +143,13 @@ namespace PaintApp
                 button3.Content = "Pen";
         }
 
+        //From http://en.wikipedia.org/wiki/Hue
+        private double sqrt3 = Math.Sqrt(3.0);
+        private double getHue(Color a)
+        {
+            return Math.Atan2(sqrt3 * (a.G - a.B), 2 * a.R - a.G - a.B);
+        }
+
         private void flood(iPoint p, Color fillColor, Color interiorColor)
         {
             if (fillColor == interiorColor) return;
@@ -154,6 +161,8 @@ namespace PaintApp
             short[] di = { -1, 0, 0, 1 };
             short[] dj = { 0, 1, -1, 0 };
 
+            double targetHue = getHue(interiorColor);
+            double tolerance = 5.0;
             while (q.Count > 0)
             {
                 p = q.Dequeue();
@@ -163,10 +172,15 @@ namespace PaintApp
                     short x = (short)(p.x + di[i]);
                     short y = (short)(p.y + dj[i]);
 
-                    if (x>=0 && x<bm.PixelWidth && y>=0 && y<bm.PixelHeight && interiorColor == bm.GetPixel(x, y))
+                    if (x >= 0 && x < bm.PixelWidth && y >= 0 && y < bm.PixelHeight)
                     {
-                        q.Enqueue(new iPoint(x, y));
-                        bm.SetPixel(x, y, fillColor);
+                        Color cur = bm.GetPixel(x, y);
+                        if (cur == fillColor) continue;
+                        if (interiorColor == cur || Math.Abs(targetHue - getHue(cur)) < tolerance)
+                        {
+                            q.Enqueue(new iPoint(x, y));
+                            bm.SetPixel(x, y, fillColor);
+                        }
                     }
                 }
             }
