@@ -39,7 +39,12 @@ namespace PaintApp
             Globals.scb = new SolidColorBrush(Colors.Black);
         }
 
-        void canvas1_MouseMove(object sender, MouseEventArgs e)
+        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            //          button2.Background = Globals.scb;
+        }
+
+        private void canvas1_MouseMove(object sender, MouseEventArgs e)
         {
             if (fillModeOn) return;
 
@@ -53,7 +58,7 @@ namespace PaintApp
             prev_p = cur_p;
         }
 
-        void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!activelyDrawing) //just started to draw, save state first (in order to undo)
             {
@@ -74,7 +79,12 @@ namespace PaintApp
             prev_p = cur_p;         
         }
 
-        void canvas1_Tap(object sender, GestureEventArgs e)
+        private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            activelyDrawing = false;
+        }
+
+        private void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (!fillModeOn) return;
             long before = DateTime.Now.Ticks;
@@ -113,6 +123,21 @@ namespace PaintApp
             toast.Show();
         }
 
+        private void colorClick(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
+        }
+
+        private void fillClick(object sender, EventArgs e)
+        {
+            fillModeOn ^= true;
+            /*           if (fillModeOn)
+                           button3.Content = "Fill";
+                       else
+                           button3.Content = "Pen";
+            */
+        }
+
         private void clearClick(object sender, EventArgs e)
         {
             undoCanvas = new Canvas();
@@ -124,24 +149,57 @@ namespace PaintApp
             }
         }
 
-        private void colorClick(object sender, EventArgs e)
+        private void saveFile()
         {
-            NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
+            String tempJPEG = "img.jpg";
+
+            //Save the writeable bitmap into a temporary file called img.jpg
+            IsolatedStorageFileStream fileStream = storage.CreateFile(tempJPEG);
+
+            bm = new WriteableBitmap(canvas1, null);
+            bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
+            fileStream.Close();
+
+            fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
+
+            MediaLibrary mediaLibrary = new MediaLibrary();
+            Picture pic = mediaLibrary.SavePicture("paint_img.jpg", fileStream);
+            fileStream.Close();
         }
 
-        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        //Save Button
+        private void saveClick(object sender, EventArgs e)
         {
-  //          button2.Background = Globals.scb;
+            saveFile();
+            //MessageBox.Show("File Saved."); //removed, the ToastPrompts look better
+
+            ToastPrompt toast = new ToastPrompt();
+
+            toast.MillisecondsUntilHidden = 1000;
+            toast.Title = "Success!";
+            toast.Message = "File Saved";
+            toast.FontSize = 30;
+            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
+            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+            toast.Show();
         }
 
-        private void fillClick(object sender, EventArgs e)
+        private void undoClick(object sender, EventArgs e) //Undo button
         {
-            fillModeOn ^= true;
- /*           if (fillModeOn)
-                button3.Content = "Fill";
-            else
-                button3.Content = "Pen";
- */       }
+            if (undoCanvas == null) return; //Can't undo
+
+            //System.Diagnostics.Debug.WriteLine("undo-ing!!!!!!!"); //save to remove
+
+            canvas1.Children.Clear();
+            while (undoCanvas.Children.Count > 0)
+            {
+                UIElement child = undoCanvas.Children[0];
+                undoCanvas.Children.RemoveAt(0);
+                canvas1.Children.Add(child);
+            }
+
+            undoCanvas = null;
+        }
 
         //From http://en.wikipedia.org/wiki/Hue
         private double sqrt3 = Math.Sqrt(3.0);
@@ -188,62 +246,6 @@ namespace PaintApp
             return;
         }
 
-        private void saveFile() 
-        {
-            String tempJPEG = "img.jpg";
-
-            //Save the writeable bitmap into a temporary file called img.jpg
-            IsolatedStorageFileStream fileStream = storage.CreateFile(tempJPEG);
-
-            bm = new WriteableBitmap(canvas1, null);
-            bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
-            fileStream.Close();
-
-            fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
-
-            MediaLibrary mediaLibrary = new MediaLibrary();
-            Picture pic = mediaLibrary.SavePicture("paint_img.jpg", fileStream);
-            fileStream.Close();            
-        }
-
-        //Save Button
-        private void saveClick(object sender, EventArgs e)
-        {
-            saveFile();
-            //MessageBox.Show("File Saved."); //removed, the ToastPrompts look better
-
-            ToastPrompt toast = new ToastPrompt();
-
-            toast.MillisecondsUntilHidden = 1000;
-            toast.Title = "Success!";
-            toast.Message = "File Saved";
-            toast.FontSize = 30;
-            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
-            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
-            toast.Show();
-        }
-
-        private void undoClick(object sender, EventArgs e) //Undo button
-        {
-            if (undoCanvas == null) return; //Can't undo
-
-            //System.Diagnostics.Debug.WriteLine("undo-ing!!!!!!!"); //save to remove
-
-            canvas1.Children.Clear();
-            while (undoCanvas.Children.Count > 0)
-            {
-                UIElement child = undoCanvas.Children[0];
-                undoCanvas.Children.RemoveAt(0);
-                canvas1.Children.Add(child);
-            }
-
-            undoCanvas = null;
-        }
-
-        private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            activelyDrawing = false;
-        }
     }
 }
 
