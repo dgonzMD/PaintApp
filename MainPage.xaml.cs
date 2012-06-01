@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
 using System.IO.IsolatedStorage;
 using System.Windows.Resources;
 using Microsoft.Phone.Tasks;
@@ -41,7 +42,7 @@ namespace PaintApp
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            //          button2.Background = Globals.scb;
+            
         }
 
         private void canvas1_MouseMove(object sender, MouseEventArgs e)
@@ -131,11 +132,17 @@ namespace PaintApp
         private void fillClick(object sender, EventArgs e)
         {
             fillModeOn ^= true;
-            /*           if (fillModeOn)
-                           button3.Content = "Fill";
-                       else
-                           button3.Content = "Pen";
-            */
+            ApplicationBarIconButton b = (ApplicationBarIconButton)ApplicationBar.Buttons[1];
+            if (fillModeOn)
+            {
+                b.IconUri = new Uri("/Images/edit.png", UriKind.Relative);
+                b.Text = "Pen";
+            }
+            else
+            {
+                b.IconUri = new Uri("/Images/beer.png", UriKind.Relative);
+                b.Text = "Fill";
+            }
         }
 
         private void clearClick(object sender, EventArgs e)

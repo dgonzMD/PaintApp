@@ -24,7 +24,7 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/brush.png" Text="Colors" Click="clearClick" />
+            <shell:ApplicationBarIconButton IconUri="/Images/brush.png" Text="Colors" Click="colorClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/beer.png" Text="Fill" Click="fillClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/undo.png" Text="Undo" Click="undoClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/delete.png" Text="Clear" Click="clearClick" />
