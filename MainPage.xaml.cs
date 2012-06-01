@@ -161,8 +161,8 @@ namespace PaintApp
             short[] di = { -1, 0, 0, 1 };
             short[] dj = { 0, 1, -1, 0 };
 
-            double targetHue = getHue(interiorColor);
-            double tolerance = 5.0;
+            //double targetHue = getHue(interiorColor);
+            //double tolerance = 5.0;
             while (q.Count > 0)
             {
                 p = q.Dequeue();
@@ -176,7 +176,7 @@ namespace PaintApp
                     {
                         Color cur = bm.GetPixel(x, y);
                         if (cur == fillColor) continue;
-                        if (interiorColor == cur || Math.Abs(targetHue - getHue(cur)) < tolerance)
+                        if (interiorColor == cur /*|| Math.Abs(targetHue - getHue(cur)) < tolerance*/)
                         {
                             q.Enqueue(new iPoint(x, y));
                             bm.SetPixel(x, y, fillColor);
