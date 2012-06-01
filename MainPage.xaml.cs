@@ -11,6 +11,12 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using System.IO.IsolatedStorage;
+using System.Windows.Resources;
+using Microsoft.Phone.Tasks;
+using System.IO;
+using Microsoft.Xna.Framework.Media;
+using Coding4Fun.Phone.Controls;
 
 namespace PaintApp
 {
@@ -18,8 +24,9 @@ namespace PaintApp
     {
         private iPoint cur_p = new iPoint(0,0);
         private iPoint prev_p = new iPoint(0,0);
-        private bool fill = false;
+        private bool fillModeOn = false;
         private WriteableBitmap bm;
+        private IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication(); //Used in save
 
         // Constructor
         public MainPage()
@@ -32,7 +39,7 @@ namespace PaintApp
 
         void canvas1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (fill) return;
+            if (fillModeOn) return;
 
             cur_p = new iPoint(e.GetPosition(this.canvas1));
             Line line = new Line() { X1 = cur_p.x, Y1 = cur_p.y, X2 = prev_p.x, Y2 = prev_p.y };
@@ -53,7 +60,7 @@ namespace PaintApp
         }
         void canvas1_Tap(object sender, GestureEventArgs e)
         {
-            if (!fill) return;
+            if (!fillModeOn) return;
             long before = DateTime.Now.Ticks;           
 
             cur_p.x  = (short)e.GetPosition(canvas1).X;
@@ -72,8 +79,16 @@ namespace PaintApp
             long after = DateTime.Now.Ticks;
 
             TimeSpan elapsedTime = new TimeSpan(after - before);
-            MessageBox.Show(string.Format("Task took {0} milliseconds",
-                elapsedTime.TotalMilliseconds));
+
+            ToastPrompt toast = new ToastPrompt();
+            toast.MillisecondsUntilHidden = 1000;
+            toast.Title = "Time: ";
+            toast.Message = string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds);
+            toast.FontSize = 30;
+            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
+            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+            toast.Show();
+
 
         }
 
@@ -94,8 +109,8 @@ namespace PaintApp
 
         private void fillButton_Click(object sender, RoutedEventArgs e)
         {
-            fill ^= true;
-            if (fill)
+            fillModeOn ^= true;
+            if (fillModeOn)
                 button3.Content = "Fill";
             else
                 button3.Content = "Pen";
@@ -128,7 +143,45 @@ namespace PaintApp
                     }
                 }
             }
+
+            return;
         }
+
+        private void saveFile() 
+        {
+            String tempJPEG = "img.jpg";
+
+            //Save the writeable bitmap into a temporary file called img.jpg
+            IsolatedStorageFileStream fileStream = storage.CreateFile(tempJPEG);
+
+            bm = new WriteableBitmap(canvas1, null);
+            bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
+            fileStream.Close();
+
+            fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
+
+            MediaLibrary mediaLibrary = new MediaLibrary();
+            Picture pic = mediaLibrary.SavePicture("testPic.jpg", fileStream);
+            fileStream.Close();            
+        }
+
+        //Save Button
+        private void button4_Click(object sender, RoutedEventArgs e)
+        {
+            saveFile();
+            //MessageBox.Show("File Saved."); //removed, the ToastPrompts look better
+
+            ToastPrompt toast = new ToastPrompt();
+
+            toast.MillisecondsUntilHidden = 1000;
+            toast.Title = "Success!";
+            toast.Message = "File Saved";
+            toast.FontSize = 30;
+            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
+            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+            toast.Show();
+        }
+        
     }
 }
 
