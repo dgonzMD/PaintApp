@@ -28,6 +28,10 @@
             <shell:ApplicationBarIconButton IconUri="/Images/beer.png" Text="Fill" Click="fillClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/undo.png" Text="Undo" Click="undoClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/delete.png" Text="Clear" Click="clearClick" />
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem x:Name="SavePicture" Text="Save" Click="saveClick"></shell:ApplicationBarMenuItem>
+                <shell:ApplicationBarMenuItem x:Name="LoadPicture" Text="Load"></shell:ApplicationBarMenuItem>
+            </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 

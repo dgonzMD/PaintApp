@@ -156,24 +156,6 @@ namespace PaintApp
             }
         }
 
-        private void saveFile()
-        {
-            String tempJPEG = "img.jpg";
-
-            //Save the writeable bitmap into a temporary file called img.jpg
-            IsolatedStorageFileStream fileStream = storage.CreateFile(tempJPEG);
-
-            bm = new WriteableBitmap(canvas1, null);
-            bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
-            fileStream.Close();
-
-            fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
-
-            MediaLibrary mediaLibrary = new MediaLibrary();
-            Picture pic = mediaLibrary.SavePicture("paint_img.jpg", fileStream);
-            fileStream.Close();
-        }
-
         //Save Button
         private void saveClick(object sender, EventArgs e)
         {
@@ -207,6 +189,25 @@ namespace PaintApp
 
             undoCanvas = null;
         }
+
+        private void saveFile()
+        {
+            String tempJPEG = "img.jpg";
+
+            //Save the writeable bitmap into a temporary file called img.jpg
+            IsolatedStorageFileStream fileStream = storage.CreateFile(tempJPEG);
+
+            bm = new WriteableBitmap(canvas1, null);
+            bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
+            fileStream.Close();
+
+            fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
+
+            MediaLibrary mediaLibrary = new MediaLibrary();
+            Picture pic = mediaLibrary.SavePicture("paint_img.jpg", fileStream);
+            fileStream.Close();
+        }
+
 
         //From http://en.wikipedia.org/wiki/Hue
         private double sqrt3 = Math.Sqrt(3.0);
