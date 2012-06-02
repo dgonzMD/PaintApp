@@ -20,7 +20,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <!--ContentPanel - place additional content here-->
-        <Canvas Grid.Row="1" HorizontalAlignment="Stretch" Name="canvas1" VerticalAlignment="Stretch" Background="White" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap" MouseLeftButtonUp="canvas1_MouseLeftButtonUp" Height="671" Width="480"></Canvas>
+        <Canvas Grid.Row="1" HorizontalAlignment="Stretch" Name="canvas1" VerticalAlignment="Stretch" Background="White" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap" MouseLeftButtonUp="canvas1_MouseLeftButtonUp" Height="Auto" Width="Auto"></Canvas>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
