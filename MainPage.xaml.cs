@@ -38,6 +38,7 @@ namespace PaintApp
             this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
             Globals.scb = new SolidColorBrush(Colors.Black);
+            Globals.brushSize = 8;
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
@@ -52,7 +53,7 @@ namespace PaintApp
             cur_p = new iPoint(e.GetPosition(this.canvas1));
             Line line = new Line() { X1 = cur_p.x, Y1 = cur_p.y, X2 = prev_p.x, Y2 = prev_p.y };
             line.Stroke = Globals.scb;
-            line.StrokeThickness = 8;
+            line.StrokeThickness = Globals.brushSize;
             line.StrokeStartLineCap = PenLineCap.Round;
 
             this.canvas1.Children.Add(line);

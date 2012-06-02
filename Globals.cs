@@ -15,5 +15,6 @@ namespace PaintApp
     public static class Globals
     {
         public static SolidColorBrush scb;
+        public static int brushSize;
     }
 }

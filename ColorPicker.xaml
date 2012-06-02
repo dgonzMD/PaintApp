@@ -22,17 +22,17 @@
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+        <StackPanel x:Name="TitlePanel" Margin="0,0,0,28" Height="604">
             <TextBlock x:Name="PageTitle" Text="Select Color" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" FontSize="70" />
 
             <c4fControls:ColorHexagonPicker x:Name="colorHexagonPicker" ColorSize="30" Height="500" ColorChanged="colorHexagonPicker_ColorChanged" />
-            <TextBlock Text="Color" Width="51" />
-            <Rectangle Height="50" Width="50" Fill="{Binding ElementName=colorHexagonPicker, Path=SolidColorBrush}" />
-
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0"></Grid>
+        <Grid x:Name="ContentPanel" Margin="0,610,0,0" Grid.RowSpan="2">
+            <Slider Height="93" HorizontalAlignment="Right" Margin="0,6,0,0" Name="slider1" VerticalAlignment="Top" Width="240" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" />
+            <TextBlock Height="43" HorizontalAlignment="Left" Margin="45,18,0,0" Name="brushText" Text="BrushSize" VerticalAlignment="Top" TextAlignment="Left" Width="166" FontSize="26" />
+        </Grid>
 
     </Grid>
 

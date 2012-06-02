@@ -18,6 +18,8 @@ namespace PaintApp
         public ColorPicker()
         {
             InitializeComponent();
+            slider1.Value = Globals.brushSize;
+            brushText.Text=string.Format("Brush Size: {0}", slider1.Value);
         }
 
         private void colorHexagonPicker_ColorChanged(object sender, Color color)
@@ -32,6 +34,12 @@ namespace PaintApp
             //.Navigate() calls the constructor again, I don't want that. I just want to call the 
             //event handler for the page load.
             //NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+        }
+
+        private void slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Globals.brushSize = (int)slider1.Value;
+            brushText.Text = string.Format("Brush Size: {0}", Globals.brushSize);
         }
     }
 }
