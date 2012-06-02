@@ -143,6 +143,7 @@ namespace PaintApp
 
             flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
             bm.Invalidate();
+            canvas1.Children.Clear();
             this.canvas1.Children.Add(image);
 
             //Used to measure performance
