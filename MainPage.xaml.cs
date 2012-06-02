@@ -134,7 +134,7 @@ namespace PaintApp
         {
             fillModeOn ^= true;
             ApplicationBarIconButton b = (ApplicationBarIconButton)ApplicationBar.Buttons[1];
-            if (fillModeOn)
+            if (!fillModeOn)
             {
                 b.IconUri = new Uri("/Images/edit.png", UriKind.Relative);
                 b.Text = "Pen";
