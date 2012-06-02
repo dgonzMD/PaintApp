@@ -30,6 +30,7 @@ namespace PaintApp
         private WriteableBitmap bm;
         private Canvas undoCanvas = null;
         private IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication(); //Used in save
+        private PhotoChooserTask pct;
 
         // Constructor
         public MainPage()
@@ -39,6 +40,38 @@ namespace PaintApp
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
             Globals.scb = new SolidColorBrush(Colors.Black);
             Globals.brushSize = 8;
+
+            pct = new PhotoChooserTask();
+            pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+        }
+
+        private void photoChooserTask_Completed(object sender, PhotoResult e)
+        {
+            if (e.TaskResult == TaskResult.OK)
+            {
+                bm = new WriteableBitmap(canvas1, null);
+                bm.SetSource(e.ChosenPhoto);
+                Image image = new Image();
+                ImageSource img = bm;
+                image.SetValue(Image.SourceProperty, bm);
+
+                canvas1.Children.Clear();
+                canvas1.Children.Add(image);
+
+                ToastPrompt toast = new ToastPrompt();
+                toast.MillisecondsUntilHidden = 1000;
+                toast.Message = "Load Successful";
+                toast.FontSize = 30;
+                toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
+                toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+                toast.Show();
+
+                //Frank: Look into cleaning up this Imagesource mess later with the following trick
+                //Code to display the photo on the page in an image control named myImage.
+                //System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+                //bmp.SetSource(e.ChosenPhoto);
+                //myImage.Source = bmp;
+            }
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
@@ -193,10 +226,8 @@ namespace PaintApp
 
         private void saveFile()
         {
-            String tempJPEG = "img.jpg";
-
             //Save the writeable bitmap into a temporary file called img.jpg
-            IsolatedStorageFileStream fileStream = storage.CreateFile(tempJPEG);
+            IsolatedStorageFileStream fileStream = storage.CreateFile("img.jpg");
 
             bm = new WriteableBitmap(canvas1, null);
             bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
@@ -207,6 +238,15 @@ namespace PaintApp
             MediaLibrary mediaLibrary = new MediaLibrary();
             Picture pic = mediaLibrary.SavePicture("paint_img.jpg", fileStream);
             fileStream.Close();
+        }
+
+        private void loadClick(object sender, EventArgs e)
+        {
+            //MediaLibrary mediaLibrary = new MediaLibrary();
+            //PictureAlbum album = mediaLibrary.RootPictureAlbum;
+            //PictureCollection pc = album.Pictures;
+            
+            pct.Show();
         }
 
 
