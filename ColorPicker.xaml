@@ -30,8 +30,8 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="0,610,0,0" Grid.RowSpan="2">
-            <Slider Height="93" HorizontalAlignment="Right" Margin="0,6,0,0" Name="slider1" VerticalAlignment="Top" Width="240" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" />
-            <TextBlock Height="43" HorizontalAlignment="Left" Margin="45,18,0,0" Name="brushText" Text="Brush Size" VerticalAlignment="Top" TextAlignment="Left" Width="166" FontSize="26" />
+            <Slider Height="93" HorizontalAlignment="Right" Margin="0,-7,6,0" Name="slider1" VerticalAlignment="Top" Width="240" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" />
+            <TextBlock Height="43" HorizontalAlignment="Left" Margin="246,37,0,0" Name="brushText" Text="Brush Size" VerticalAlignment="Top" TextAlignment="Left" Width="189" FontSize="26" />
         </Grid>
 
     </Grid>
