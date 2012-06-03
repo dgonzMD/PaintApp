@@ -25,7 +25,7 @@ namespace PaintApp
     {
         private iPoint cur_p = new iPoint(0,0);
         private iPoint prev_p = new iPoint(0,0);
-        private bool fillModeOn = false;
+        private int toolState = 0;
         private bool activelyDrawing = false;
         private WriteableBitmap bm;
         private IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication(); //Used in save
@@ -83,7 +83,7 @@ namespace PaintApp
 
         private void canvas1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (fillModeOn) return;
+            if (toolState>0) return;
 
             cur_p = new iPoint(e.GetPosition(this.canvas1));
             Line line = new Line() { X1 = cur_p.x, Y1 = cur_p.y, X2 = prev_p.x, Y2 = prev_p.y };
@@ -116,35 +116,43 @@ namespace PaintApp
 
         private void canvas1_Tap(object sender, GestureEventArgs e)
         {
-            if (!fillModeOn) return;
-            long before = DateTime.Now.Ticks;
+            if (toolState == 1)
+            {
+                long before = DateTime.Now.Ticks;
 
-            undoBm = new WriteableBitmap(canvas1, null); //UNDOop
+                undoBm = new WriteableBitmap(canvas1, null); //UNDOop
             
-            cur_p.x  = (short)e.GetPosition(canvas1).X;
-            cur_p.y = (short)e.GetPosition(canvas1).Y;
+                cur_p.x  = (short)e.GetPosition(canvas1).X;
+                cur_p.y = (short)e.GetPosition(canvas1).Y;
 
-            bm = new WriteableBitmap(canvas1, null);
-            Image image = new Image();
-            ImageSource img = bm;
-            image.SetValue(Image.SourceProperty, bm);
+                bm = new WriteableBitmap(canvas1, null);
+                Image image = new Image();
+                ImageSource img = bm;
+                image.SetValue(Image.SourceProperty, bm);
 
-            flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
-            bm.Invalidate();
-            canvas1.Children.Clear();
-            this.canvas1.Children.Add(image);
+                flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
+                bm.Invalidate();
+                canvas1.Children.Clear();
+                this.canvas1.Children.Add(image);
 
-            //Used to measure performance
-            long after = DateTime.Now.Ticks;
-            TimeSpan elapsedTime = new TimeSpan(after - before);
-            ToastPrompt toast = new ToastPrompt();
-            toast.MillisecondsUntilHidden = 1000;
-            toast.Title = "Time: ";
-            toast.Message = string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds);
-            toast.FontSize = 30;
-            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
-            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
-            toast.Show();
+                //Used to measure performance
+                long after = DateTime.Now.Ticks;
+                TimeSpan elapsedTime = new TimeSpan(after - before);
+                ToastPrompt toast = new ToastPrompt();
+                toast.MillisecondsUntilHidden = 1000;
+                toast.Title = "Time: ";
+                toast.Message = string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds);
+                toast.FontSize = 30;
+                toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
+                toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+                toast.Show();
+            }
+            else if (toolState == 2)
+            {
+                bm = new WriteableBitmap(canvas1, null);
+                Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
+                NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
+            }
         }
 
         private void colorClick(object sender, EventArgs e)
@@ -154,18 +162,24 @@ namespace PaintApp
 
         private void fillClick(object sender, EventArgs e)
         {
-            fillModeOn ^= true;
+            toolState = (toolState + 1) % 3;
             ApplicationBarIconButton b = (ApplicationBarIconButton)ApplicationBar.Buttons[1];
-            if (!fillModeOn)
+            switch(toolState)
             {
-                b.IconUri = new Uri("/Images/edit.png", UriKind.Relative);
-                b.Text = "Pen";
+                case 0:
+                    b.IconUri = new Uri("/Images/edit.png", UriKind.Relative);
+                    b.Text = "Pen";
+                    break;
+                case 1:
+                    b.IconUri = new Uri("/Images/beer.png", UriKind.Relative);
+                    b.Text = "Fill";
+                    break;
+                case 2:
+                    b.IconUri = new Uri("/Images/droplet.png", UriKind.Relative);
+                    b.Text = "Sample";
+                    break;
             }
-            else
-            {
-                b.IconUri = new Uri("/Images/beer.png", UriKind.Relative);
-                b.Text = "Fill";
-            }
+            
         }
 
         private void clearClick(object sender, EventArgs e)
