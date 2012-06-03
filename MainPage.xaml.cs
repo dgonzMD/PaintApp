@@ -40,7 +40,7 @@ namespace PaintApp
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
             Globals.scb = new SolidColorBrush(Colors.Black);
             Globals.brushSize = 8;
-
+            Globals.plc = PenLineCap.Round;
             pct = new PhotoChooserTask();
             pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
         }
@@ -87,7 +87,7 @@ namespace PaintApp
             Line line = new Line() { X1 = cur_p.x, Y1 = cur_p.y, X2 = prev_p.x, Y2 = prev_p.y };
             line.Stroke = Globals.scb;
             line.StrokeThickness = Globals.brushSize;
-            line.StrokeStartLineCap = PenLineCap.Round;
+            line.StrokeStartLineCap = Globals.plc;
 
             this.canvas1.Children.Add(line);
             prev_p = cur_p;

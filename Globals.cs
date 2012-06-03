@@ -16,5 +16,6 @@ namespace PaintApp
     {
         public static SolidColorBrush scb;
         public static int brushSize;
+        public static PenLineCap plc;
     }
 }

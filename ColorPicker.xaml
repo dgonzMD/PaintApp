@@ -32,6 +32,21 @@
         <Grid x:Name="ContentPanel" Margin="0,610,0,0" Grid.RowSpan="2">
             <Slider Height="93" HorizontalAlignment="Right" Margin="0,-7,6,0" Name="slider1" VerticalAlignment="Top" Width="240" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" />
             <TextBlock Height="43" HorizontalAlignment="Left" Margin="246,37,0,0" Name="brushText" Text="Brush Size" VerticalAlignment="Top" TextAlignment="Left" Width="189" FontSize="26" />
+            <Button Height="80" HorizontalAlignment="Left" Name="roundButton" VerticalAlignment="Top" Width="80" Click="roundButton_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="/PaintApp;component/Images/circle2.png" />
+                </Button.Background>
+            </Button>
+            <Button Height="80" HorizontalAlignment="Left" Margin="66,0,0,0" Name="squareButton" VerticalAlignment="Top" Width="80" Click="SquareButton_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="/PaintApp;component/Images/square.png" />
+                </Button.Background>
+            </Button>
+            <Button Height="80" HorizontalAlignment="Left" Margin="132,0,0,0" Name="triangleButton" VerticalAlignment="Top" Width="80" Click="triangleButton_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="/PaintApp;component/Images/triangle.png" />
+                </Button.Background>
+            </Button>
         </Grid>
 
     </Grid>
