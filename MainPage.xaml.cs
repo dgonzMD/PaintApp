@@ -74,7 +74,7 @@ namespace PaintApp
 
             cur_p = new iPoint(e.GetPosition(this.canvas1));
             Line line = new Line() { X1 = cur_p.x, Y1 = cur_p.y, X2 = prev_p.x, Y2 = prev_p.y };
-            line.Stroke = Globals.scb;
+            line.Stroke = new SolidColorBrush(Globals.scb.Color);
             line.StrokeThickness = Globals.brushSize;
             line.StrokeStartLineCap = Globals.plc;
 
