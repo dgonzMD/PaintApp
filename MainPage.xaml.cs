@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.IO.IsolatedStorage;
-using System.Windows.Resources;
 using Microsoft.Phone.Tasks;
 using System.IO;
 using Microsoft.Xna.Framework.Media;
@@ -36,11 +31,14 @@ namespace PaintApp
         public MainPage()
         {
             InitializeComponent();
-            this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
-            this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
+
+            canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
+            canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
+            
             Globals.scb = new SolidColorBrush(Colors.Black);
             Globals.brushSize = 8;
             Globals.plc = PenLineCap.Round;
+            
             pct = new PhotoChooserTask();
             pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
         }
@@ -53,12 +51,8 @@ namespace PaintApp
                 
                 bm = new WriteableBitmap(canvas1, null);
                 bm.SetSource(e.ChosenPhoto);
-                Image image = new Image();
-                ImageSource img = bm;
-                image.SetValue(Image.SourceProperty, bm);
-
-                canvas1.Children.Clear();
-                canvas1.Children.Add(image);
+                
+                updateCanvasFromWBM(bm);
 
                 ToastPrompt toast = new ToastPrompt();
                 toast.MillisecondsUntilHidden = 1000;
@@ -67,15 +61,10 @@ namespace PaintApp
                 toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
                 toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
                 toast.Show();
-
-                //Frank: Look into cleaning up this Imagesource mess later with the following trick
-                //Code to display the photo on the page in an image control named myImage.
-                //System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
-                //bmp.SetSource(e.ChosenPhoto);
-                //myImage.Source = bmp;
             }
         }
 
+        //Frank: remove this if you aren't using it Daniel (don't forget to remove it from the xaml as well)
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             
@@ -114,6 +103,28 @@ namespace PaintApp
             activelyDrawing = false;
         }
 
+        //updates canvas1 to the whatever WriteableBitmap you give it
+        private void updateCanvasFromWBM(WriteableBitmap b)
+        {
+            Image image = new Image();
+            image.Source = b;
+
+            canvas1.Children.Clear();
+            canvas1.Children.Add(image);
+        }
+
+        private void makeToast(string title, string text, double duration = 1000)
+        {
+            ToastPrompt toast = new ToastPrompt();
+            toast.MillisecondsUntilHidden = 1000;
+            toast.Title = title;
+            toast.Message = text;
+            toast.FontSize = 30;
+            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
+            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+            toast.Show();
+        }
+
         private void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (toolState == 1)
@@ -126,28 +137,19 @@ namespace PaintApp
                 cur_p.y = (short)e.GetPosition(canvas1).Y;
 
                 bm = new WriteableBitmap(canvas1, null);
-                Image image = new Image();
-                ImageSource img = bm;
-                image.SetValue(Image.SourceProperty, bm);
-
+                
                 flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
                 bm.Invalidate();
-                canvas1.Children.Clear();
-                this.canvas1.Children.Add(image);
+
+                updateCanvasFromWBM(bm);
 
                 //Used to measure performance
                 long after = DateTime.Now.Ticks;
                 TimeSpan elapsedTime = new TimeSpan(after - before);
-                ToastPrompt toast = new ToastPrompt();
-                toast.MillisecondsUntilHidden = 1000;
-                toast.Title = "Time: ";
-                toast.Message = string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds);
-                toast.FontSize = 30;
-                toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
-                toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
-                toast.Show();
+
+                makeToast("Time: ", string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds));
             }
-            else if (toolState == 2)
+            else if (toolState == 2) //Frank: I think this is buggy... will try reproduce it later
             {
                 bm = new WriteableBitmap(canvas1, null);
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
@@ -179,45 +181,16 @@ namespace PaintApp
                     b.Text = "Sample";
                     break;
             }
-            
         }
 
         private void clearClick(object sender, EventArgs e)
         {
-            undoBm = new WriteableBitmap(canvas1, null); //undoop
+            undoBm = new WriteableBitmap(canvas1, null);
             canvas1.Children.Clear();
         }
 
         //Save Button
         private void saveClick(object sender, EventArgs e)
-        {
-            saveFile();
-            //MessageBox.Show("File Saved."); //removed, the ToastPrompts look better
-
-            ToastPrompt toast = new ToastPrompt();
-
-            toast.MillisecondsUntilHidden = 1000;
-            toast.Title = "Success!";
-            toast.Message = "File Saved";
-            toast.FontSize = 30;
-            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
-            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
-            toast.Show();
-        }
-
-        private void undoClick(object sender, EventArgs e) //Undo button
-        {
-            if (undoBm == null) return;
-
-            canvas1.Children.Clear();
-
-            Image image = new Image();
-            ImageSource img = undoBm;
-            image.SetValue(Image.SourceProperty, undoBm);
-            canvas1.Children.Add(image);
-        }
-
-        private void saveFile()
         {
             //Save the writeable bitmap into a temporary file called img.jpg
             IsolatedStorageFileStream fileStream = storage.CreateFile("img.jpg");
@@ -226,18 +199,30 @@ namespace PaintApp
             bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
             fileStream.Close();
 
+            //Now open that temp file and save it in the media library
             fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
 
             MediaLibrary mediaLibrary = new MediaLibrary();
             Picture pic = mediaLibrary.SavePicture("paint_img.jpg", fileStream);
             fileStream.Close();
+
+            makeToast("Success!", "File Saved");
         }
+
+        //Undo Button
+        private void undoClick(object sender, EventArgs e)
+        {
+            if (undoBm == null) return; //There are no operations to Undo
+
+            updateCanvasFromWBM(undoBm);
+            undoBm = null; //Pop
+        }
+
 
         private void loadClick(object sender, EventArgs e)
         {
             pct.Show();
         }
-
 
         //From http://en.wikipedia.org/wiki/Hue
         private double sqrt3 = Math.Sqrt(3.0);
@@ -283,18 +268,10 @@ namespace PaintApp
 
             return;
         }
-
-        //this is buggy. changes a previously drawn line to the selected color. 
-        private void canvas_Hold(object sender, GestureEventArgs e) 
-        {
-            bm = new WriteableBitmap(canvas1, null);
-            Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
-            NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
-        }
-
     }
 }
 
+//Internal class, used to represent the state in the floodfill algorithm
 class iPoint
 {
     public short x, y; // can possibly use shorts
