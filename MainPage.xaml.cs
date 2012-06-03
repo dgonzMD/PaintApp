@@ -179,8 +179,8 @@ namespace PaintApp
                     b.Text = "Fill";
                     break;
                 case 2:
-                    b.IconUri = new Uri("/Images/droplet.png", UriKind.Relative);
-                    b.Text = "Sample";
+                    b.IconUri = new Uri("/Images/questionmark.png", UriKind.Relative);
+                    b.Text = "Query";
                     break;
             }
             

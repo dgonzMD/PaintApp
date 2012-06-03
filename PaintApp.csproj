@@ -110,13 +110,13 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Images\circle2.png" />
-    <Resource Include="Images\circle2Inv.png" />
+    <Content Include="Images\questionmark.png" />
+    <Content Include="Images\circle2.png" />
     <Content Include="Images\droplet.png" />
     <Content Include="Images\ColorPickerColor.png" />
     <Resource Include="Images\square.png" />
     <Resource Include="Images\squareInv.png" />
-    <Resource Include="Images\triangle.png" />
+    <Content Include="Images\triangle.png" />
     <Resource Include="Images\triangleInv.png" />
     <Content Include="Images\undo.png" />
     <Content Include="Images\brush.png" />
