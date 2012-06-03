@@ -31,14 +31,11 @@ namespace PaintApp
         public MainPage()
         {
             InitializeComponent();
-
-            canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
-            canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
-            
+            this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
+            this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
             Globals.scb = new SolidColorBrush(Colors.Black);
             Globals.brushSize = 8;
             Globals.plc = PenLineCap.Round;
-            
             pct = new PhotoChooserTask();
             pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
         }
@@ -51,20 +48,19 @@ namespace PaintApp
                 
                 bm = new WriteableBitmap(canvas1, null);
                 bm.SetSource(e.ChosenPhoto);
-                
                 updateCanvasFromWBM(bm);
 
-                ToastPrompt toast = new ToastPrompt();
-                toast.MillisecondsUntilHidden = 1000;
-                toast.Message = "Load Successful";
-                toast.FontSize = 30;
-                toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
-                toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
-                toast.Show();
+                makeToast("", "Load Successful");
+
+                //Frank: Look into cleaning up this Imagesource mess later with the following trick
+                //Code to display the photo on the page in an image control named myImage.
+                //System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+                //bmp.SetSource(e.ChosenPhoto);
+                //myImage.Source = bmp;
             }
         }
 
-        //Frank: remove this if you aren't using it Daniel (don't forget to remove it from the xaml as well)
+        //Frank: Remove this if you are not using it. (Don't forget to remove it from the xaml too)
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             
@@ -113,18 +109,6 @@ namespace PaintApp
             canvas1.Children.Add(image);
         }
 
-        private void makeToast(string title, string text, double duration = 1000)
-        {
-            ToastPrompt toast = new ToastPrompt();
-            toast.MillisecondsUntilHidden = 1000;
-            toast.Title = title;
-            toast.Message = text;
-            toast.FontSize = 30;
-            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
-            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
-            toast.Show();
-        }
-
         private void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (toolState == 1)
@@ -142,14 +126,14 @@ namespace PaintApp
                 bm.Invalidate();
 
                 updateCanvasFromWBM(bm);
-
+                
                 //Used to measure performance
                 long after = DateTime.Now.Ticks;
                 TimeSpan elapsedTime = new TimeSpan(after - before);
-
+                
                 makeToast("Time: ", string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds));
             }
-            else if (toolState == 2) //Frank: I think this is buggy... will try reproduce it later
+            else if (toolState == 2)
             {
                 bm = new WriteableBitmap(canvas1, null);
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
@@ -181,11 +165,13 @@ namespace PaintApp
                     b.Text = "Sample";
                     break;
             }
+            
         }
 
+        //Clear Button
         private void clearClick(object sender, EventArgs e)
         {
-            undoBm = new WriteableBitmap(canvas1, null);
+            undoBm = new WriteableBitmap(canvas1, null); //undoop
             canvas1.Children.Clear();
         }
 
@@ -199,7 +185,6 @@ namespace PaintApp
             bm.SaveJpeg(fileStream, bm.PixelWidth, bm.PixelHeight, 0, 85);
             fileStream.Close();
 
-            //Now open that temp file and save it in the media library
             fileStream = storage.OpenFile("img.jpg", FileMode.Open, FileAccess.Read);
 
             MediaLibrary mediaLibrary = new MediaLibrary();
@@ -209,15 +194,18 @@ namespace PaintApp
             makeToast("Success!", "File Saved");
         }
 
-        //Undo Button
-        private void undoClick(object sender, EventArgs e)
+        //Undo button
+        private void undoClick(object sender, EventArgs e) 
         {
-            if (undoBm == null) return; //There are no operations to Undo
+            if (undoBm == null) return;
 
-            updateCanvasFromWBM(undoBm);
-            undoBm = null; //Pop
+            canvas1.Children.Clear();
+
+            Image image = new Image();
+            ImageSource img = undoBm;
+            image.SetValue(Image.SourceProperty, undoBm);
+            canvas1.Children.Add(image);
         }
-
 
         private void loadClick(object sender, EventArgs e)
         {
@@ -268,10 +256,22 @@ namespace PaintApp
 
             return;
         }
+
+        //Helper function used to display a toast
+        private void makeToast(string title, string text, double duration = 1000)
+        {
+            ToastPrompt toast = new ToastPrompt();
+            toast.MillisecondsUntilHidden = 1000;
+            toast.Title = title;
+            toast.Message = text;
+            toast.FontSize = 30;
+            toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
+            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+            toast.Show();
+        }
     }
 }
 
-//Internal class, used to represent the state in the floodfill algorithm
 class iPoint
 {
     public short x, y; // can possibly use shorts
