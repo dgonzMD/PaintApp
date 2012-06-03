@@ -26,6 +26,8 @@ namespace PaintApp
         private IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication(); //Used in save
         private PhotoChooserTask pct;
         private WriteableBitmap undoBm = null;
+        private LinkedList<WriteableBitmap> undoList = new LinkedList<WriteableBitmap>();
+        private int maxUndos = 50;
 
         // Constructor
         public MainPage()
@@ -44,7 +46,7 @@ namespace PaintApp
         {
             if (e.TaskResult == TaskResult.OK)
             {
-                undoBm = new WriteableBitmap(canvas1, null); //UndoOp
+                updateUndoList();
                 
                 bm = new WriteableBitmap(canvas1, null);
                 bm.SetSource(e.ChosenPhoto);
@@ -82,20 +84,31 @@ namespace PaintApp
 
         private void canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!activelyDrawing) //just started to draw, save state first (in order to undo)
+            if (toolState == 0)
             {
-                undoBm = new WriteableBitmap(canvas1, null); //UNDOop
-                activelyDrawing = true;
+                canvas1.CaptureMouse();
+                if (!activelyDrawing && toolState == 0) //just started to draw, save state first (in order to undo)
+                {
+                    updateUndoList();
+                    activelyDrawing = true;
+                }
+
+                cur_p.x = (short)e.GetPosition(canvas1).X;
+                cur_p.y = (short)e.GetPosition(canvas1).Y;
+
+                prev_p = cur_p;
             }
-
-            cur_p.x = (short)e.GetPosition(canvas1).X;
-            cur_p.y = (short)e.GetPosition(canvas1).Y;
-
-            prev_p = cur_p;         
+            else if (toolState == 2)
+            {
+                bm = new WriteableBitmap(canvas1, null);
+                Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
+                NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
+            }
         }
 
         private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            canvas1.ReleaseMouseCapture();
             activelyDrawing = false;
         }
 
@@ -108,7 +121,12 @@ namespace PaintApp
             canvas1.Children.Clear();
             canvas1.Children.Add(image);
         }
-
+        private void updateUndoList()
+        {
+            if (undoList.Count >= maxUndos)
+                undoList.RemoveLast();
+            undoList.AddFirst(new WriteableBitmap(canvas1,null));
+        }
         private void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (toolState == 1)
@@ -116,6 +134,7 @@ namespace PaintApp
                 long before = DateTime.Now.Ticks;
 
                 undoBm = new WriteableBitmap(canvas1, null); //UNDOop
+                updateUndoList();
             
                 cur_p.x  = (short)e.GetPosition(canvas1).X;
                 cur_p.y = (short)e.GetPosition(canvas1).Y;
@@ -132,12 +151,6 @@ namespace PaintApp
                 TimeSpan elapsedTime = new TimeSpan(after - before);
                 
                 makeToast("Time: ", string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds));
-            }
-            else if (toolState == 2)
-            {
-                bm = new WriteableBitmap(canvas1, null);
-                Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
-                NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
             }
         }
 
@@ -171,7 +184,7 @@ namespace PaintApp
         //Clear Button
         private void clearClick(object sender, EventArgs e)
         {
-            undoBm = new WriteableBitmap(canvas1, null); //undoop
+            updateUndoList();
             canvas1.Children.Clear();
         }
 
@@ -197,13 +210,15 @@ namespace PaintApp
         //Undo button
         private void undoClick(object sender, EventArgs e) 
         {
-            if (undoBm == null) return;
+            if (undoList.Count<1) return;
 
             canvas1.Children.Clear();
+            WriteableBitmap tempbm = undoList.First.Value;
+            undoList.RemoveFirst();
 
             Image image = new Image();
-            ImageSource img = undoBm;
-            image.SetValue(Image.SourceProperty, undoBm);
+            ImageSource img = tempbm;
+            image.SetValue(Image.SourceProperty, tempbm);
             canvas1.Children.Add(image);
         }
 
