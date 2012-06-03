@@ -112,6 +112,7 @@
     </Content>
     <Resource Include="Images\circle2.png" />
     <Resource Include="Images\circle2Inv.png" />
+    <Content Include="Images\droplet.png" />
     <Content Include="Images\ColorPickerColor.png" />
     <Resource Include="Images\square.png" />
     <Resource Include="Images\squareInv.png" />
