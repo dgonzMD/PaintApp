@@ -133,7 +133,7 @@ namespace PaintApp
                 canvas1.Children.RemoveAt(0);
                 undoCanvas.Children.Add(child);
             }
-
+            
             cur_p.x  = (short)e.GetPosition(canvas1).X;
             cur_p.y = (short)e.GetPosition(canvas1).Y;
 
