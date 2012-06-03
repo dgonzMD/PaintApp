@@ -28,9 +28,9 @@ namespace PaintApp
         private bool fillModeOn = false;
         private bool activelyDrawing = false;
         private WriteableBitmap bm;
-        private Canvas undoCanvas = null;
         private IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication(); //Used in save
         private PhotoChooserTask pct;
+        private WriteableBitmap undoBm = null;
 
         // Constructor
         public MainPage()
@@ -49,6 +49,8 @@ namespace PaintApp
         {
             if (e.TaskResult == TaskResult.OK)
             {
+                undoBm = new WriteableBitmap(canvas1, null); //UndoOp
+                
                 bm = new WriteableBitmap(canvas1, null);
                 bm.SetSource(e.ChosenPhoto);
                 Image image = new Image();
@@ -97,14 +99,7 @@ namespace PaintApp
         {
             if (!activelyDrawing) //just started to draw, save state first (in order to undo)
             {
-                undoCanvas = new Canvas();
-
-                bm = new WriteableBitmap(canvas1, null);
-                Image image = new Image();
-                ImageSource img = bm;
-                image.SetValue(Image.SourceProperty, bm);
-                undoCanvas.Children.Add(image);
-
+                undoBm = new WriteableBitmap(canvas1, null); //UNDOop
                 activelyDrawing = true;
             }
 
@@ -124,19 +119,12 @@ namespace PaintApp
             if (!fillModeOn) return;
             long before = DateTime.Now.Ticks;
 
-            bm = new WriteableBitmap(canvas1, null);
-
-            undoCanvas = new Canvas();
-            while (canvas1.Children.Count > 0)
-            {
-                UIElement child = canvas1.Children[0];
-                canvas1.Children.RemoveAt(0);
-                undoCanvas.Children.Add(child);
-            }
+            undoBm = new WriteableBitmap(canvas1, null); //UNDOop
             
             cur_p.x  = (short)e.GetPosition(canvas1).X;
             cur_p.y = (short)e.GetPosition(canvas1).Y;
 
+            bm = new WriteableBitmap(canvas1, null);
             Image image = new Image();
             ImageSource img = bm;
             image.SetValue(Image.SourceProperty, bm);
@@ -182,13 +170,8 @@ namespace PaintApp
 
         private void clearClick(object sender, EventArgs e)
         {
-            undoCanvas = new Canvas();
-            while (canvas1.Children.Count > 0)
-            {
-                UIElement ele = canvas1.Children[0];
-                canvas1.Children.RemoveAt(0);
-                undoCanvas.Children.Add(ele);
-            }
+            undoBm = new WriteableBitmap(canvas1, null); //undoop
+            canvas1.Children.Clear();
         }
 
         //Save Button
@@ -210,19 +193,14 @@ namespace PaintApp
 
         private void undoClick(object sender, EventArgs e) //Undo button
         {
-            if (undoCanvas == null) return; //Can't undo
-
-            //System.Diagnostics.Debug.WriteLine("undo-ing!!!!!!!"); //save to remove
+            if (undoBm == null) return;
 
             canvas1.Children.Clear();
-            while (undoCanvas.Children.Count > 0)
-            {
-                UIElement child = undoCanvas.Children[0];
-                undoCanvas.Children.RemoveAt(0);
-                canvas1.Children.Add(child);
-            }
 
-            undoCanvas = null;
+            Image image = new Image();
+            ImageSource img = undoBm;
+            image.SetValue(Image.SourceProperty, undoBm);
+            canvas1.Children.Add(image);
         }
 
         private void saveFile()
@@ -243,10 +221,6 @@ namespace PaintApp
 
         private void loadClick(object sender, EventArgs e)
         {
-            //MediaLibrary mediaLibrary = new MediaLibrary();
-            //PictureAlbum album = mediaLibrary.RootPictureAlbum;
-            //PictureCollection pc = album.Pictures;
-            
             pct.Show();
         }
 
@@ -296,7 +270,8 @@ namespace PaintApp
             return;
         }
 
-        private void canvas_Hold(object sender, GestureEventArgs e)
+        //this is buggy. changes a previously drawn line to the selected color. 
+        private void canvas_Hold(object sender, GestureEventArgs e) 
         {
             bm = new WriteableBitmap(canvas1, null);
             Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
