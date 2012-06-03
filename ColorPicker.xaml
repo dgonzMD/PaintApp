@@ -29,7 +29,14 @@
                     <Rectangle Height="50" Width="50" Name="colorRect" />
                 </Border>
             </StackPanel>
-            <c4fControls:ColorHexagonPicker x:Name="colorHexagonPicker" ColorSize="26" ColorDarknessSteps="4" Height="527" ColorChanged="colorHexagonPicker_ColorChanged" ColorBrightnessSteps="4" GreyScaleSteps="25" Width="442" BorderThickness="5" BorderBrush="White"></c4fControls:ColorHexagonPicker>
+            <Grid Height="584" Name="grid1" Width="450">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="446*" />
+                </Grid.ColumnDefinitions>
+                <c4fControls:ColorHexagonPicker x:Name="colorHexagonPicker" ColorSize="26" ColorDarknessSteps="4" Height="527" ColorChanged="colorHexagonPicker_ColorChanged" ColorBrightnessSteps="4" GreyScaleSteps="25" Width="441" BorderThickness="5" BorderBrush="White" AllowDrop="False" SelectedStrokeColor="Silver" Margin="0,6,5,51" Grid.Column="1"></c4fControls:ColorHexagonPicker>
+                <Border BorderBrush="Silver" BorderThickness="5" Grid.Column="1" Height="61" HorizontalAlignment="Left" Margin="34,469,0,0" Name="border2" VerticalAlignment="Top" Width="374" />
+            </Grid>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -39,7 +46,7 @@
                 <ColumnDefinition Width="474*" />
             </Grid.ColumnDefinitions>
             <TextBlock Height="43" HorizontalAlignment="Left" Margin="0,9,0,0" Name="brushText" Text="Brush Size" VerticalAlignment="Top" TextAlignment="Left" Width="231" FontSize="26" Grid.Column="1" />
-            <Slider Height="111" HorizontalAlignment="Right" Name="slider1" VerticalAlignment="Top" Width="252" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" Grid.Column="1" Margin="0,-16,20,0" Minimum="1" />
+            <Slider Height="111" HorizontalAlignment="Right" Name="slider1" VerticalAlignment="Top" Width="252" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" Grid.Column="1" Margin="0,-16,20,0" Minimum="0" />
         </Grid>
 
     </Grid>
