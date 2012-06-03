@@ -38,6 +38,7 @@ namespace PaintApp
             Globals.scb = new SolidColorBrush(Colors.Black);
             Globals.brushSize = 8;
             Globals.plc = PenLineCap.Round;
+
             pct = new PhotoChooserTask();
             pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
         }
@@ -47,7 +48,7 @@ namespace PaintApp
             if (e.TaskResult == TaskResult.OK)
             {
                 updateUndoList();
-                
+
                 bm = new WriteableBitmap(canvas1, null);
                 bm.SetSource(e.ChosenPhoto);
                 updateCanvasFromWBM(bm);
@@ -59,6 +60,10 @@ namespace PaintApp
                 //System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
                 //bmp.SetSource(e.ChosenPhoto);
                 //myImage.Source = bmp;
+            }
+            else
+            {
+                makeToast("Uh oh!", "Load Failed");
             }
         }
 

@@ -29,6 +29,8 @@ namespace PaintApp
 
         private void slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (slider1.Value == 0.0) slider1.Value = 1.0;
+
             Globals.brushSize = (int)slider1.Value;
             brushText.Text = string.Format("Brush Size: {0}", Globals.brushSize);
         }
