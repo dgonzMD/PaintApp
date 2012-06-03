@@ -16,3 +16,5 @@ Todo List
 <br>
 --Debug the color sampling tool
 <br>
+--Modify fill to include 'similar' colors in order to avoid the residual fringe
+<br>
