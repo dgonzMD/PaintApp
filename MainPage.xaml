@@ -33,10 +33,10 @@
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem x:Name="SavePicture" Text="Save" Click="saveClick"></shell:ApplicationBarMenuItem>
                 <shell:ApplicationBarMenuItem x:Name="LoadPicture" Text="Load" Click="loadClick"></shell:ApplicationBarMenuItem>
+                <shell:ApplicationBarMenuItem x:Name="HelpButton" Text="Help" Click="helpClick"></shell:ApplicationBarMenuItem>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 
-    <!--Sample code showing usage of ApplicationBar-->
     
 </phone:PhoneApplicationPage>

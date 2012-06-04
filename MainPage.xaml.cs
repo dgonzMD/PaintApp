@@ -45,7 +45,6 @@ namespace PaintApp
             if (e.TaskResult == TaskResult.OK)
             {
                 updateUndoList();
-
                 /*
                 bm = new WriteableBitmap(canvas1, null);
                 bm.SetSource(e.ChosenPhoto);
@@ -80,6 +79,7 @@ namespace PaintApp
                     ScaleY = 1.0*canvas1.Height / bi.PixelHeight
                 };
 
+
                 bm = new WriteableBitmap(image1, st);
 
                 updateCanvasFromWBM(bm);
@@ -97,9 +97,10 @@ namespace PaintApp
             }
         }
 
+        //Frank: Remove this if you are not using it. (Don't forget to remove it from the xaml too)
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            rectangle1.Fill = Globals.scb;   
+            
         }
 
         private void canvas1_MouseMove(object sender, MouseEventArgs e)
@@ -155,17 +156,14 @@ namespace PaintApp
             canvas1.Children.Clear();
             canvas1.Children.Add(image);
         }
-
         private void updateUndoList()
         {
             if (undoList.Count >= maxUndos)
                 undoList.RemoveLast();
             undoList.AddFirst(new WriteableBitmap(canvas1,null));
         }
-
         private void canvas1_Tap(object sender, GestureEventArgs e)
         {
-            
             if (toolState == 1)
             {
                 long before = DateTime.Now.Ticks;
@@ -320,6 +318,11 @@ namespace PaintApp
             toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
             toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
             toast.Show();
+        }
+
+        private void helpClick(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/instructions.xaml", UriKind.Relative));
         }
     }
 }

@@ -67,6 +67,9 @@
     <Reference Include="WriteableBitmapExWinPhone">
       <HintPath>..\packages\WriteableBitmapEx.0.9.8.6\lib\sl30\WriteableBitmapExWinPhone.dll</HintPath>
     </Reference>
+    <Reference Include="WriteableBitmapExWinPhoneXnaDependant">
+      <HintPath>..\packages\WriteableBitmapEx.0.9.8.6\lib\sl30\WriteableBitmapExWinPhoneXnaDependant.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -78,6 +81,9 @@
     <Compile Include="Globals.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="instructions.xaml.cs">
+      <DependentUpon>instructions.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -91,6 +97,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="instructions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -110,8 +120,6 @@
     <Content Include="Images\questionmark.png" />
     <Content Include="Images\circle2.png" />
     <Content Include="Images\droplet.png" />
-    <Content Include="Images\ColorPickerColor.png" />
-    <Resource Include="Images\square.png" />
     <Content Include="Images\undo.png" />
     <Content Include="Images\brush.png" />
     <Content Include="Images\beer.png" />
