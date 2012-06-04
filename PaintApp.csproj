@@ -67,9 +67,6 @@
     <Reference Include="WriteableBitmapExWinPhone">
       <HintPath>..\packages\WriteableBitmapEx.0.9.8.6\lib\sl30\WriteableBitmapExWinPhone.dll</HintPath>
     </Reference>
-    <Reference Include="WriteableBitmapExWinPhoneXnaDependant">
-      <HintPath>..\packages\WriteableBitmapEx.0.9.8.6\lib\sl30\WriteableBitmapExWinPhoneXnaDependant.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
