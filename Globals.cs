@@ -14,8 +14,8 @@ namespace PaintApp
 {
     public static class Globals
     {
-        public static SolidColorBrush scb;
-        public static int brushSize;
-        public static PenLineCap plc;
+        public static SolidColorBrush scb= new SolidColorBrush(Colors.Black);
+        public static int brushSize= 8;
+        public static PenLineCap plc= PenLineCap.Round;
     }
 }

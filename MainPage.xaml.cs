@@ -35,9 +35,6 @@ namespace PaintApp
             InitializeComponent();
             this.canvas1.MouseMove += new MouseEventHandler(canvas1_MouseMove);
             this.canvas1.MouseLeftButtonDown += new MouseButtonEventHandler(canvas1_MouseLeftButtonDown);
-            Globals.scb = new SolidColorBrush(Colors.Black);
-            Globals.brushSize = 8;
-            Globals.plc = PenLineCap.Round;
 
             pct = new PhotoChooserTask();
             pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);

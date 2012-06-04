@@ -1,6 +1,6 @@
 ﻿<phone:PhoneApplicationPage 
     x:Class="PaintApp.ColorPicker"
-    xmlns:c4fControls="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
+    xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -11,8 +11,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" BorderBrush="White">
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True" BorderBrush="White" Loaded="PhoneApplicationPage_Loaded">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -34,8 +34,8 @@
                     <ColumnDefinition Width="4*" />
                     <ColumnDefinition Width="446*" />
                 </Grid.ColumnDefinitions>
-                <c4fControls:ColorHexagonPicker x:Name="colorHexagonPicker" ColorSize="26" ColorDarknessSteps="4" Height="527" ColorChanged="colorHexagonPicker_ColorChanged" ColorBrightnessSteps="4" GreyScaleSteps="25" Width="441" BorderThickness="5" BorderBrush="White" AllowDrop="False" SelectedStrokeColor="Silver" Margin="0,6,5,51" Grid.Column="1"></c4fControls:ColorHexagonPicker>
-                <Border BorderBrush="Silver" BorderThickness="5" Grid.Column="1" Height="61" HorizontalAlignment="Left" Margin="34,469,0,0" Name="border2" VerticalAlignment="Top" Width="374" />
+  <!--              <c4fControls:ColorPicker x:Name="colorHexagonPicker" ColorSize="26" ColorDarknessSteps="4" Height="527" ColorChanged="colorHexagonPicker_ColorChanged" ColorBrightnessSteps="4" GreyScaleSteps="25" Width="441" BorderThickness="5" BorderBrush="White" AllowDrop="False" SelectedStrokeColor="Silver" Margin="0,6,5,51" Grid.Column="1"></c4fControls:ColorHexagonPicker> -->
+                <c4fToolkit:ColorPicker x:Name="picker" Height="300" Width="400" Margin="24,88,22,196" Grid.Column="1" ColorChanged="picker_ColorChanged" />
             </Grid>
         </StackPanel>
 
@@ -45,18 +45,18 @@
                 <ColumnDefinition Width="6*" />
                 <ColumnDefinition Width="474*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Height="43" HorizontalAlignment="Left" Margin="0,9,0,0" Name="brushText" Text="Brush Size" VerticalAlignment="Top" TextAlignment="Left" Width="231" FontSize="26" Grid.Column="1" />
-            <Slider Height="111" HorizontalAlignment="Right" Name="slider1" VerticalAlignment="Top" Width="252" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" Grid.Column="1" Margin="0,-16,20,0" Minimum="0" />
+            <TextBlock Height="43" HorizontalAlignment="Left" Margin="0,40,0,0" Name="brushText" Text="Brush Size" VerticalAlignment="Top" TextAlignment="Left" Width="231" FontSize="26" Grid.Column="1" />
+            <Slider Height="111" HorizontalAlignment="Right" Name="slider1" VerticalAlignment="Top" Width="252" ValueChanged="slider1_ValueChanged" SmallChange="1" LargeChange="10" Maximum="40" Grid.Column="1" Margin="0,18,20,0" Minimum="0" />
         </Grid>
 
     </Grid>
 
 
     <!--Sample code showing usage of ApplicationBar-->
-    <phone:PhoneApplicationPage.ApplicationBar>
+ <!--   <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Images/check.png" Text="Colors" Click="AppBarConfirm"/>
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar> -->
 
 </phone:PhoneApplicationPage>
