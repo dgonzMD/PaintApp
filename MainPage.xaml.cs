@@ -45,42 +45,25 @@ namespace PaintApp
             if (e.TaskResult == TaskResult.OK)
             {
                 updateUndoList();
-                /*
+
                 bm = new WriteableBitmap(canvas1, null);
+
+                double width = bm.PixelWidth;
+                double height = bm.PixelHeight;
+
                 bm.SetSource(e.ChosenPhoto);
-
                 
-                double width = canvas1.Width;
-                double height = canvas1.Height;
+                double scaleX = bm.PixelWidth / width;
+                double scaleY = bm.PixelHeight / height;
 
-                double scaleFactor = Math.Max( / width, bm.PixelHeight / height);
+                //For debugging
+                //System.Diagnostics.Debug.WriteLine(width + " - " + height);
+                //System.Diagnostics.Debug.WriteLine(bm.PixelWidth + " :: " + bm.PixelHeight);
+                //System.Diagnostics.Debug.WriteLine(scaleX + " = " + scaleY);
 
-                bm = bm.Resize((int)(bm.PixelWidth/scaleFactor), 
-                               (int)(bm.PixelHeight/scaleFactor), 
+                bm = bm.Resize((int)(bm.PixelWidth / scaleX), 
+                               (int)(bm.PixelHeight / scaleY), 
                                WriteableBitmapExtensions.Interpolation.Bilinear);
-                */
-
-                //WriteableBitmap tempBm = new WriteableBitmap(canvas1, null);
-                //tempBm.SetSource(e.ChosenPhoto);
-
-                BitmapImage bi = new BitmapImage();
-                bi.SetSource(e.ChosenPhoto);
-                Image image1 = new Image()
-                {
-                    Width = canvas1.Width,
-                    Height = canvas1.Height,
-                    Visibility = System.Windows.Visibility.Collapsed,
-                    Source = bi
-                };
-
-                ScaleTransform st = new ScaleTransform()
-                {
-                    ScaleX = 1.0*canvas1.Width / bi.PixelWidth,
-                    ScaleY = 1.0*canvas1.Height / bi.PixelHeight
-                };
-
-
-                bm = new WriteableBitmap(image1, st);
 
                 updateCanvasFromWBM(bm);
                 makeToast("", "Load Successful");
