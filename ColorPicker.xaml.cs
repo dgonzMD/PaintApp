@@ -20,7 +20,7 @@ namespace PaintApp
         }
         private void picker_ColorChanged(object sender, Color color)
         {
-            Globals.scb = picker.SolidColorBrush;
+            Globals.scb = new SolidColorBrush(color);
             colorRect.Fill = Globals.scb;
         }
 
@@ -37,6 +37,5 @@ namespace PaintApp
             Globals.brushSize = (int)slider1.Value;
             brushText.Text = string.Format("Brush Size: {0}", Globals.brushSize);
         }
-
     }
 }

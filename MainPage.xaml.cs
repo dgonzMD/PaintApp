@@ -80,10 +80,9 @@ namespace PaintApp
             }
         }
 
-        //Frank: Remove this if you are not using it. (Don't forget to remove it from the xaml too)
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            border2.Background = Globals.scb;
         }
 
         private void canvas1_MouseMove(object sender, MouseEventArgs e)
@@ -120,6 +119,7 @@ namespace PaintApp
             {
                 bm = new WriteableBitmap(canvas1, null);
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
+                border2.Background = Globals.scb;
     //            NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
             }
         }
@@ -139,12 +139,14 @@ namespace PaintApp
             canvas1.Children.Clear();
             canvas1.Children.Add(image);
         }
+
         private void updateUndoList()
         {
             if (undoList.Count >= maxUndos)
                 undoList.RemoveLast();
             undoList.AddFirst(new WriteableBitmap(canvas1,null));
         }
+        
         private void canvas1_Tap(object sender, GestureEventArgs e)
         {
             if (toolState == 1)
