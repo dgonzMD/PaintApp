@@ -179,6 +179,8 @@ namespace PaintApp
             NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
         }
 
+        //Frank: such a misleading name..
+        //(this is the eventhandler for the tool appbutton
         private void fillClick(object sender, EventArgs e)
         {
             toolState = (toolState + 1) % 3;
@@ -188,14 +190,17 @@ namespace PaintApp
                 case 0:
                     b.IconUri = new Uri("/Images/edit.png", UriKind.Relative);
                     b.Text = "Pen";
+                    makeToast("Pen Mode", "", 500, "/Images/edit.png");
                     break;
                 case 1:
                     b.IconUri = new Uri("/Images/beer.png", UriKind.Relative);
                     b.Text = "Fill";
+                    makeToast("Fill Mode", "", 500, "/Images/beer.png");
                     break;
                 case 2:
                     b.IconUri = new Uri("/Images/questionmark.png", UriKind.Relative);
                     b.Text = "Query";
+                    makeToast("Color Extraction Mode", "", 500, "Images/questionmark.png");
                     break;
             }
             
@@ -293,15 +298,16 @@ namespace PaintApp
         }
 
         //Helper function used to display a toast
-        private void makeToast(string title, string text, double duration = 1000)
+        private void makeToast(string title, string text, int duration = 1000, string uri = "Images/check.png")
         {
             ToastPrompt toast = new ToastPrompt();
-            toast.MillisecondsUntilHidden = 1000;
+            toast.MillisecondsUntilHidden = duration;
             toast.Title = title;
             toast.Message = text;
-            toast.FontSize = 30;
+            toast.FontSize = 28;
+            toast.Height = 80;
             toast.TextOrientation = System.Windows.Controls.Orientation.Horizontal;
-            toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.Relative));
+            toast.ImageSource = new BitmapImage(new Uri(uri, UriKind.Relative));
             toast.Show();
         }
 
