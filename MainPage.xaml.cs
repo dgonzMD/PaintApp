@@ -107,7 +107,7 @@ namespace PaintApp
             {
                 bm = new WriteableBitmap(canvas1, null);
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
-                NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
+    //            NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
             }
         }
 
