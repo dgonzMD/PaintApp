@@ -32,7 +32,7 @@
                 <TextBlock Height="30" Name="textBlock2" Text="Color &amp; pen width selector" HorizontalAlignment="Stretch" Margin="30,0,0,0" />
             </StackPanel>
             <StackPanel Height="57" Name="stackPanel5" Width="463" Orientation="Horizontal">
-                <Image Height="50" Name="image5" Stretch="Fill" Width="50" Source="/images/undo.png" />
+                <Image Height="50" Name="image5" Stretch="Fill" Width="50" Source="/images/back.png" />
                 <TextBlock Height="30" Name="textBlock6" Text="Undo previous action" HorizontalAlignment="Stretch" Margin="30,0,0,0" />
             </StackPanel>
             <StackPanel Height="57" Name="stackPanel6" Width="463" Orientation="Horizontal">
