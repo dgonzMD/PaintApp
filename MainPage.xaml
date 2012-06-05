@@ -29,12 +29,12 @@
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Images/brush.png" Text="Colors" Click="colorClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/edit.png" Text="Pen" Click="fillClick" />
-            <shell:ApplicationBarIconButton IconUri="/Images/undo.png" Text="Undo" Click="undoClick" />
+            <shell:ApplicationBarIconButton IconUri="/Images/back.png" Text="Undo" Click="undoClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/delete.png" Text="Clear" Click="clearClick" />
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem x:Name="SavePicture" Text="Save" Click="saveClick"></shell:ApplicationBarMenuItem>
                 <shell:ApplicationBarMenuItem x:Name="LoadPicture" Text="Load" Click="loadClick"></shell:ApplicationBarMenuItem>
-                <shell:ApplicationBarMenuItem x:Name="HelpButton" Text="Help" Click="helpClick"></shell:ApplicationBarMenuItem>
+                <shell:ApplicationBarMenuItem x:Name="HelpButton" Text="Instructions" Click="helpClick"></shell:ApplicationBarMenuItem>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

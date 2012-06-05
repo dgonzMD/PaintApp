@@ -90,6 +90,30 @@ namespace PaintApp
             if (toolState>0) return;
 
             cur_p = new iPoint(e.GetPosition(this.canvas1));
+
+            /* Frank: My own custom drawline with variable thickness (still needs some work)
+            bm = new WriteableBitmap(canvas1, null);
+
+            int x1 = cur_p.x;
+            int y1 = cur_p.y;
+            int x2 = prev_p.x;
+            int y2 = prev_p.y;
+
+            double pp_x = y1 - y2;
+            double pp_y = x2 - x1;
+            double mag = Math.Sqrt(pp_x * pp_x + pp_y * pp_y);
+            
+            //normalize
+            pp_x /= mag;
+            pp_y /= mag;
+
+            for (int i = 0; i < Globals.brushSize; i++)
+                bm.DrawLine((int)(x1 + pp_x * i), (int)(y1 + pp_y * i), (int)(x2 + pp_x * i), (int)(y2 + pp_y * i), Globals.scb.Color);
+
+            bm.Invalidate();            
+            updateCanvasFromWBM(bm);
+            */
+
             Line line = new Line() { X1 = cur_p.x, Y1 = cur_p.y, X2 = prev_p.x, Y2 = prev_p.y };
             line.Stroke = new SolidColorBrush(Globals.scb.Color);
             line.StrokeThickness = Globals.brushSize;
@@ -120,7 +144,8 @@ namespace PaintApp
                 bm = new WriteableBitmap(canvas1, null);
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
                 border2.Background = Globals.scb;
-    //            NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
+                makeToast("Color Sampled", "");
+                //NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
             }
         }
 
@@ -163,7 +188,6 @@ namespace PaintApp
                 
                 flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
                 bm.Invalidate();
-
                 updateCanvasFromWBM(bm);
                 
                 //Used to measure performance
@@ -180,7 +204,7 @@ namespace PaintApp
         }
 
         //Frank: such a misleading name..
-        //(this is the eventhandler for the tool appbutton
+        //(this is the eventhandler for the 'tools' appbutton
         private void fillClick(object sender, EventArgs e)
         {
             toolState = (toolState + 1) % 3;
@@ -199,8 +223,8 @@ namespace PaintApp
                     break;
                 case 2:
                     b.IconUri = new Uri("/Images/questionmark.png", UriKind.Relative);
-                    b.Text = "Query";
-                    makeToast("Color Extraction Mode", "", 500, "Images/questionmark.png");
+                    b.Text = "Sample";
+                    makeToast("Color Sampling Mode", "", 500, "Images/questionmark.png");
                     break;
             }
             
@@ -259,6 +283,18 @@ namespace PaintApp
             return Math.Atan2(sqrt3 * (a.G - a.B), 2 * a.R - a.G - a.B);
         }
 
+        //From http://en.wikipedia.org/wiki/Luminance_(relative)
+        //Y = 0.2126 R + 0.7152 G + 0.0722 B
+        private double getLuminance(Color a)
+        {
+            return 0.2126 * a.R + 0.7152 * a.G + 0.0722 * a.B;
+        }
+
+        private double colorDist(double x1, double y1, double x2, double y2)
+        {
+            return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+        }
+
         private void flood(iPoint p, Color fillColor, Color interiorColor)
         {
             if (fillColor == interiorColor) return;
@@ -270,8 +306,11 @@ namespace PaintApp
             short[] di = { -1, 0, 0, 1 };
             short[] dj = { 0, 1, -1, 0 };
 
-            //double targetHue = getHue(interiorColor);
-            //double tolerance = 5.0;
+            //double tHue = getHue(interiorColor);
+            //double tSaturation = getSaturation(interiorColor);
+            //double tLuminance = getLuminance(interiorColor);
+            //double tolerance = 400.0;
+
             while (q.Count > 0)
             {
                 p = q.Dequeue();
@@ -285,7 +324,7 @@ namespace PaintApp
                     {
                         Color cur = bm.GetPixel(x, y);
                         if (cur == fillColor) continue;
-                        if (interiorColor == cur /*|| Math.Abs(targetHue - getHue(cur)) < tolerance*/)
+                        if (interiorColor == cur /*colorDist(tHue, tLuminance, getHue(cur), getLuminance(cur)) < tolerance*/)
                         {
                             q.Enqueue(new iPoint(x, y));
                             bm.SetPixel(x, y, fillColor);

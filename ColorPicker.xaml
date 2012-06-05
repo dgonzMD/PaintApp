@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" BorderBrush="White" Loaded="PhoneApplicationPage_Loaded">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -37,10 +37,10 @@
 
 
     <!--Sample code showing usage of ApplicationBar-->
- <!--   <phone:PhoneApplicationPage.ApplicationBar>
+    <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Images/check.png" Text="Colors" Click="AppBarConfirm"/>
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar> -->
+    </phone:PhoneApplicationPage.ApplicationBar> 
 
 </phone:PhoneApplicationPage>

@@ -19,5 +19,10 @@ namespace PaintApp
         {
             InitializeComponent();
         }
+
+        private void AppBarConfirm(object o, EventArgs e)
+        {
+            NavigationService.GoBack();
+        }
     }
 }
