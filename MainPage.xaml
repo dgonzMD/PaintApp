@@ -20,7 +20,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <!--ContentPanel - place additional content here-->
-        <Canvas Grid.Row="1" Name="canvas1" VerticalAlignment="Top" Background="Black" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap" MouseLeftButtonUp="canvas1_MouseLeftButtonUp" Height="590"></Canvas>
+        <Canvas Grid.Row="1" Name="canvas1" VerticalAlignment="Top" Background="White" MouseLeftButtonDown="canvas1_MouseLeftButtonDown" Tap="canvas1_Tap" MouseLeftButtonUp="canvas1_MouseLeftButtonUp" Height="590"></Canvas>
         <Rectangle Name="rectangle1" Stroke="Black" StrokeThickness="1" Margin="0,672,0,0" Grid.Row="1" />
         <my:AdControl AdUnitId="90168" ApplicationId="702bf6a3-38bf-4b98-93e0-5aa77f88a4df" Height="80" Name="adControl1" Width="480" />
         <Border BorderBrush="Silver" BorderThickness="4" Name="border2" Margin="0,590,0,0" Grid.Row="1" />
