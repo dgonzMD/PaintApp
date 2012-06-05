@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{025f509b-b193-44ba-8bd0-d1a6e8908e81}" Title="Pocket Paint" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="PaintApp author" Description="Sample description" Publisher="PaintApp">
-    <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
+  <App xmlns="" ProductID="{025f509b-b193-44ba-8bd0-d1a6e8908e81}" Title="Pocket Paint" RuntimeType="Silverlight" Version="1.2.0.0" Genre="apps.normal" Author="FAR" Description="A simple but powerful paint app." Publisher="FAR">
+    <IconPath IsRelative="true" IsResource="false">Images\62appicon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_GAMERSERVICES" />
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />

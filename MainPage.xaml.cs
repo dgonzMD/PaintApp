@@ -194,7 +194,7 @@ namespace PaintApp
                 long after = DateTime.Now.Ticks;
                 TimeSpan elapsedTime = new TimeSpan(after - before);
                 
-                makeToast("Time: ", string.Format(" {0} milliseconds", elapsedTime.TotalMilliseconds));
+                makeToast("Bucket Applied -", string.Format(" {0}ms", elapsedTime.TotalMilliseconds));
             }
         }
 

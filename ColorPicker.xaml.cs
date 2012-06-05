@@ -10,13 +10,14 @@ namespace PaintApp
         public ColorPicker()
         {
             InitializeComponent();
-            slider1.Value = Globals.brushSize;
+            //slider1.Value = Globals.brushSize; set in xaml instead
             brushText.Text=string.Format("Brush Size: {0}", slider1.Value);
             colorRect.Fill = Globals.scb;
         }
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             picker.Color = Globals.scb.Color;
+            slider1.Value = Globals.brushSize;
         }
         private void picker_ColorChanged(object sender, Color color)
         {
@@ -32,6 +33,8 @@ namespace PaintApp
 
         private void slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (slider1 == null) return;
+
             if (slider1.Value == 0.0) slider1.Value = 1.0;
 
             Globals.brushSize = (int)slider1.Value;
