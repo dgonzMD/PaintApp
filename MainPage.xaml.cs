@@ -186,7 +186,10 @@ namespace PaintApp
 
                 bm = new WriteableBitmap(canvas1, null);
                 
-                flood2(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
+                flood3(cur_p.y*bm.PixelWidth + cur_p.x, 
+                       Globals.getColorAsInt(), 
+                       bm.Pixels[cur_p.x + cur_p.y*bm.PixelWidth]);
+
                 bm.Invalidate();
                 updateCanvasFromWBM(bm);
                 
@@ -194,7 +197,7 @@ namespace PaintApp
                 long after = DateTime.Now.Ticks;
                 TimeSpan elapsedTime = new TimeSpan(after - before);
                 
-                makeToast("Bucket Applied -", string.Format(" {0}ms", elapsedTime.TotalMilliseconds));
+                makeToast("Bucket Applied -", string.Format(" {0}ms", elapsedTime.TotalMilliseconds), 500);
             }
         }
 
@@ -295,6 +298,50 @@ namespace PaintApp
             return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
         }
 
+        private void flood3(int p, int replacementColor, int targetColor)
+        {
+            if (replacementColor == targetColor) return;
+
+            Queue<int> q = new Queue<int>();
+            q.Enqueue(p);
+
+            int[] img = bm.Pixels;
+            int pixelCt = bm.PixelWidth * bm.PixelHeight;
+
+            while (q.Count > 0)
+            {
+                int c = q.Dequeue();
+                if (img[c] != targetColor) continue;
+
+                int stop = c - c % bm.PixelWidth; //leftmost point of that particular row
+                for (int a = c; a >= stop && img[a] == targetColor; --a)
+                {
+                    img[a] = replacementColor;
+
+                    if (a > bm.PixelWidth && img[a-bm.PixelWidth] == targetColor) //up
+                        q.Enqueue(a-bm.PixelWidth);
+
+                    if (a + bm.PixelWidth < pixelCt && img[a+bm.PixelWidth] == targetColor) //down
+                        q.Enqueue(a+bm.PixelWidth);
+                }
+
+                stop += bm.PixelWidth;
+                for (int a = c+1; a < stop && img[a] == targetColor; ++a)
+                {
+                    img[a] = replacementColor;
+
+                    if (a > bm.PixelWidth && img[a - bm.PixelWidth] == targetColor) //up
+                        q.Enqueue(a - bm.PixelWidth);
+
+                    if (a + bm.PixelWidth < pixelCt && img[a + bm.PixelWidth] == targetColor) //down
+                        q.Enqueue(a + bm.PixelWidth);
+                }
+            }
+
+            return;
+        }
+
+        //Initial scanline implementation, now deprecated to flood3
         private void flood2(iPoint p, Color replacementColor, Color targetColor)
         {
             if (replacementColor == targetColor) return;
@@ -302,6 +349,7 @@ namespace PaintApp
             Queue<iPoint> q = new Queue<iPoint>();
             q.Enqueue(p);
 
+            //bm.Lock(); 
             while (q.Count > 0)
             {
                 iPoint c = q.Dequeue();
