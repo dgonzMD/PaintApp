@@ -186,7 +186,7 @@ namespace PaintApp
 
                 bm = new WriteableBitmap(canvas1, null);
                 
-                flood(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
+                flood2(cur_p, Globals.scb.Color, bm.GetPixel(cur_p.x, cur_p.y));
                 bm.Invalidate();
                 updateCanvasFromWBM(bm);
                 
@@ -295,6 +295,47 @@ namespace PaintApp
             return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
         }
 
+        private void flood2(iPoint p, Color replacementColor, Color targetColor)
+        {
+            if (replacementColor == targetColor) return;
+
+            Queue<iPoint> q = new Queue<iPoint>();
+            q.Enqueue(p);
+
+            while (q.Count > 0)
+            {
+                iPoint c = q.Dequeue();
+                if (bm.GetPixel(c.x, c.y) != targetColor) continue;
+
+                for (short a = (short)c.x; a >= 0 && bm.GetPixel(a, c.y) == targetColor; --a)
+                {
+                    bm.SetPixel(a, c.y, replacementColor);
+
+                    if (c.y > 0 && bm.GetPixel(a, c.y - 1) == targetColor) //up
+                        q.Enqueue(new iPoint(a, (short)(c.y - 1)));
+
+                    if (c.y + 1 < bm.PixelHeight && bm.GetPixel(a, c.y + 1) == targetColor) //down
+                        q.Enqueue(new iPoint(a, (short)(c.y + 1)));
+                }
+
+                for (short b = (short)(c.x + 1); b < bm.PixelWidth && bm.GetPixel(b, c.y) == targetColor; ++b)
+                {
+                    bm.SetPixel(b, c.y, replacementColor);
+
+                    if (c.y > 0 && bm.GetPixel(b, c.y - 1) == targetColor) //up
+                        q.Enqueue(new iPoint(b, (short)(c.y - 1)));
+
+                    if (c.y + 1 < bm.PixelHeight && bm.GetPixel(b, c.y + 1) == targetColor) //down
+                        q.Enqueue(new iPoint(b, (short)(c.y + 1)));
+                }
+            }
+
+            return;
+        }
+
+
+        //UPDATE: This is now deprecated, we now use a scanline algorithm to fill
+        //Floodfill algorithm used in fill
         private void flood(iPoint p, Color fillColor, Color interiorColor)
         {
             if (fillColor == interiorColor) return;
