@@ -11,7 +11,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True" Loaded="PhoneApplicationPage_Loaded">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent" Width="480" Height="779">
@@ -54,17 +54,21 @@
                 <TextBlock Height="30" Name="textBlock5" Text="Sample - Switch to a color by tapping it" HorizontalAlignment="Stretch" Margin="30,0,0,0" />
             </StackPanel>
             <TextBlock Height="44" Name="menuApp" Text=". . ." HorizontalAlignment="Stretch" Margin="0" Width="462" FontSize="36" />
-            <StackPanel Height="57" Name="stackPanel8" Width="463" Orientation="Horizontal">
+            <StackPanel Height="30" Name="stackPanel8" Width="463" Orientation="Horizontal">
                 <TextBlock Height="30" Name="textBlock9" Text="save" HorizontalAlignment="Stretch" Margin="20,0,0,0" />
                 <TextBlock Height="30" Name="textBlock8" Text="Save Image" Margin="40,0,0,0" />
             </StackPanel>
-            <StackPanel Height="49" Name="stackPanel9" Width="463" Orientation="Horizontal">
+            <StackPanel Height="29" Name="stackPanel9" Width="463" Orientation="Horizontal">
                 <TextBlock Height="30" Name="textBlock10" Text="load" HorizontalAlignment="Stretch" Margin="20,0,0,0" />
-                <TextBlock Height="30" Name="textBlock12" Text="Load Image" Margin="40,0,0,0" />
+                <TextBlock Height="30" Name="textBlock12" Text="Load Image from memory" Margin="40,0,0,0" />
             </StackPanel>
-            <StackPanel Height="57" Name="stackPanel10" Width="463" Orientation="Horizontal">
-                <TextBlock Height="30" Name="textBlock11" Text="help" HorizontalAlignment="Stretch" Margin="20,0,0,0" />
-                <TextBlock Height="30" Name="textBlock13" Text="Show instructions" Margin="40,0,0,0" />
+            <StackPanel Height="33" Name="stackPanel10" Width="463" Orientation="Horizontal">
+                <TextBlock Height="30" Name="textBlock11" Text="picture" HorizontalAlignment="Stretch" Margin="20,0,0,0" Width="77" />
+                <TextBlock Height="30" Name="textBlock13" Text="load straight from the camera" Margin="0" Width="274" />
+            </StackPanel>
+            <StackPanel Height="30" Name="stackPanel7" Width="467" Orientation="Horizontal">
+                <TextBlock Height="30" Name="textBlock14" Text="    help" Width="99" />
+                <TextBlock Height="30" Name="textBlock15" Text="Show instructions" />
             </StackPanel>
         </StackPanel>
         <!--ContentPanel - place additional content here-->

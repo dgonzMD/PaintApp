@@ -114,10 +114,6 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Images\173appicon.png" />
-    <Resource Include="Images\200appicon.png" />
-    <Resource Include="Images\62appicon.png" />
-    <Resource Include="Images\99appicon.png" />
     <Content Include="Images\back.png" />
     <Content Include="Images\questionmark.png" />
     <Content Include="Images\brush.png" />

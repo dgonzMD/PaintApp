@@ -71,10 +71,11 @@ namespace PaintApp
                 //btnCrop.IsEnabled = true;
 
                 //textStatus.Text = "Tap the crop button to proceed";
+                makeToast("Success!", "Loaded picture");
             }
             else
             {
-                makeToast("Success: ", "Loaded Picture");
+                makeToast("Uh oh", "Couldn't load picture");
             }
         }
 
