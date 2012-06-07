@@ -20,7 +20,7 @@
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>PocketPaint.xap</XapFilename>
+    <XapFilename>PaintPP.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <SilverlightAppEntry>PaintApp.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
@@ -125,6 +125,7 @@
     <Content Include="Images\check.png" />
     <Content Include="Images\delete.png" />
     <Content Include="Images\edit.png" />
+    <Resource Include="ppp.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>

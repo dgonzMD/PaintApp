@@ -13,6 +13,7 @@ using Microsoft.Phone.Tasks;
 using System.IO;
 using Microsoft.Xna.Framework.Media;
 using Coding4Fun.Phone.Controls;
+using Microsoft.Phone;
 
 namespace PaintApp
 {
@@ -28,6 +29,7 @@ namespace PaintApp
         private WriteableBitmap undoBm = null;
         private LinkedList<WriteableBitmap> undoList = new LinkedList<WriteableBitmap>();
         private int maxUndos = 50;
+        private CameraCaptureTask ctask;
 
         // Constructor
         public MainPage()
@@ -38,6 +40,42 @@ namespace PaintApp
 
             pct = new PhotoChooserTask();
             pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            ctask = new CameraCaptureTask();
+            ctask.Completed += new EventHandler<PhotoResult>(ctask_Completed);
+        }
+
+        void ctask_Completed(object sender, PhotoResult e)
+        {
+
+            if (e.TaskResult == TaskResult.OK && e.ChosenPhoto != null)
+            {
+                bm = new WriteableBitmap(canvas1, null);
+
+                int width = bm.PixelWidth;
+                int height = bm.PixelHeight;
+
+                //Take JPEG stream and decode into a WriteableBitmap object
+                bm = PictureDecoder.DecodeJpeg(e.ChosenPhoto, height, width);
+                bm = bm.Rotate(1);
+                //Collapse visibility on the progress bar once writeable bitmap is visible.
+                //progressBar1.Visibility = Visibility.Collapsed;
+
+
+                //Populate image control with WriteableBitmap object.
+                bm.Invalidate();
+                updateCanvasFromWBM(bm);
+
+                //Once writeable bitmap has been rendered, the crop button
+                //is enabled.
+                //btnCrop.IsEnabled = true;
+
+                //textStatus.Text = "Tap the crop button to proceed";
+            }
+            else
+            {
+                makeToast("Success: ", "Loaded Picture");
+            }
         }
 
         private void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -278,6 +316,11 @@ namespace PaintApp
         private void loadClick(object sender, EventArgs e)
         {
             pct.Show();
+        }
+
+        private void pictureClick(object sender, EventArgs e)
+        {
+            ctask.Show();
         }
 
         //From http://en.wikipedia.org/wiki/Hue

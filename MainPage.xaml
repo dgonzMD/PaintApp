@@ -33,7 +33,8 @@
             <shell:ApplicationBarIconButton IconUri="/Images/delete.png" Text="Clear" Click="clearClick" />
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem x:Name="SavePicture" Text="Save" Click="saveClick"></shell:ApplicationBarMenuItem>
-                <shell:ApplicationBarMenuItem x:Name="LoadPicture" Text="Load" Click="loadClick"></shell:ApplicationBarMenuItem>
+                <shell:ApplicationBarMenuItem x:Name="LoadPicture" Text="Load from memory" Click="loadClick"></shell:ApplicationBarMenuItem>
+                <shell:ApplicationBarMenuItem x:Name="TakePicture" Text="Take Picture" Click="pictureClick"></shell:ApplicationBarMenuItem>
                 <shell:ApplicationBarMenuItem x:Name="HelpButton" Text="Instructions" Click="helpClick"></shell:ApplicationBarMenuItem>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
