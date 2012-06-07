@@ -145,6 +145,7 @@ namespace PaintApp
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
                 border2.Background = Globals.scb;
                 makeToast("Color Sampled", "");
+                fillClick(null, null); //to move to pencil mode
                 //NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
             }
         }
@@ -298,7 +299,7 @@ namespace PaintApp
             return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
         }
 
-        private void flood3(int p, int replacementColor, int targetColor)
+        private void flood3(int p, int replacementColor, int targetColor) //Scanline algorithm
         {
             if (replacementColor == targetColor) return;
 
@@ -335,90 +336,6 @@ namespace PaintApp
 
                     if (a + bm.PixelWidth < pixelCt && img[a + bm.PixelWidth] == targetColor) //down
                         q.Enqueue(a + bm.PixelWidth);
-                }
-            }
-
-            return;
-        }
-
-        //Initial scanline implementation, now deprecated to flood3
-        private void flood2(iPoint p, Color replacementColor, Color targetColor)
-        {
-            if (replacementColor == targetColor) return;
-
-            Queue<iPoint> q = new Queue<iPoint>();
-            q.Enqueue(p);
-
-            //bm.Lock(); 
-            while (q.Count > 0)
-            {
-                iPoint c = q.Dequeue();
-                if (bm.GetPixel(c.x, c.y) != targetColor) continue;
-
-                for (short a = (short)c.x; a >= 0 && bm.GetPixel(a, c.y) == targetColor; --a)
-                {
-                    bm.SetPixel(a, c.y, replacementColor);
-
-                    if (c.y > 0 && bm.GetPixel(a, c.y - 1) == targetColor) //up
-                        q.Enqueue(new iPoint(a, (short)(c.y - 1)));
-
-                    if (c.y + 1 < bm.PixelHeight && bm.GetPixel(a, c.y + 1) == targetColor) //down
-                        q.Enqueue(new iPoint(a, (short)(c.y + 1)));
-                }
-
-                for (short b = (short)(c.x + 1); b < bm.PixelWidth && bm.GetPixel(b, c.y) == targetColor; ++b)
-                {
-                    bm.SetPixel(b, c.y, replacementColor);
-
-                    if (c.y > 0 && bm.GetPixel(b, c.y - 1) == targetColor) //up
-                        q.Enqueue(new iPoint(b, (short)(c.y - 1)));
-
-                    if (c.y + 1 < bm.PixelHeight && bm.GetPixel(b, c.y + 1) == targetColor) //down
-                        q.Enqueue(new iPoint(b, (short)(c.y + 1)));
-                }
-            }
-
-            return;
-        }
-
-
-        //UPDATE: This is now deprecated, we now use a scanline algorithm to fill
-        //Floodfill algorithm used in fill
-        private void flood(iPoint p, Color fillColor, Color interiorColor)
-        {
-            if (fillColor == interiorColor) return;
-
-            Queue<iPoint> q = new Queue<iPoint>();
-            q.Enqueue(p);
-            bm.SetPixel(p.x, p.y, fillColor);
-
-            short[] di = { -1, 0, 0, 1 };
-            short[] dj = { 0, 1, -1, 0 };
-
-            //double tHue = getHue(interiorColor);
-            //double tSaturation = getSaturation(interiorColor);
-            //double tLuminance = getLuminance(interiorColor);
-            //double tolerance = 400.0;
-
-            while (q.Count > 0)
-            {
-                p = q.Dequeue();
-
-                for (int i = 0; i < 4; i++)
-                {
-                    short x = (short)(p.x + di[i]);
-                    short y = (short)(p.y + dj[i]);
-
-                    if (x >= 0 && x < bm.PixelWidth && y >= 0 && y < bm.PixelHeight)
-                    {
-                        Color cur = bm.GetPixel(x, y);
-                        if (cur == fillColor) continue;
-                        if (interiorColor == cur /*colorDist(tHue, tLuminance, getHue(cur), getLuminance(cur)) < tolerance*/)
-                        {
-                            q.Enqueue(new iPoint(x, y));
-                            bm.SetPixel(x, y, fillColor);
-                        }
-                    }
                 }
             }
 

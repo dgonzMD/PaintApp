@@ -11,7 +11,7 @@ namespace PaintApp
         public static int getColorAsInt()
         {
             Color c = scb.Color;
-            return (c.A << 24) + (c.R << 16) + (c.G << 8) + c.B;
+            return (c.A << 24) | (c.R << 16) | (c.G << 8) | c.B;
         }
     }
 }
