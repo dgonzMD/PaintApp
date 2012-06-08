@@ -192,6 +192,7 @@ namespace PaintApp
         private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             canvas1.ReleaseMouseCapture();
+            if(toolState==0)
             activelyDrawing = false;
         }
 
@@ -239,6 +240,38 @@ namespace PaintApp
                 
                 makeToast("Bucket Applied -", string.Format(" {0}ms", elapsedTime.TotalMilliseconds), 500);
             }
+            if (toolState == 3)
+            {
+
+                if (!activelyDrawing)
+                {
+                    prev_p.x = (short)e.GetPosition(canvas1).X;
+                    prev_p.y = (short)e.GetPosition(canvas1).Y;
+                    activelyDrawing = true;
+                }
+                else
+                {
+                    short tx = prev_p.x;
+                    short ty = prev_p.y;
+                    cur_p.x = (short)e.GetPosition(canvas1).X;
+                    cur_p.y = (short)e.GetPosition(canvas1).Y;
+                    Size s = new Size();
+                    s.Height = (int)Math.Abs(cur_p.y -ty);
+                    s.Width = (int)Math.Abs(cur_p.x - tx);
+                    System.Diagnostics.Debug.WriteLine(s.Height + " " + s.Width);
+                    Point o = new Point(Math.Min(cur_p.x, tx), Math.Min(cur_p.y, ty));
+                    Ellipse tempRect = new Ellipse() { Width = s.Width, Height = s.Height };
+                    tempRect.Margin = new Thickness(o.X, o.Y, 0, 0);
+                    tempRect.Stroke = new SolidColorBrush(Globals.scb.Color);
+                    tempRect.StrokeThickness = Globals.brushSize;
+                    tempRect.StrokeStartLineCap = Globals.plc;
+
+                    updateUndoList();
+                    this.canvas1.Children.Add(tempRect);
+                    activelyDrawing = false;
+                }
+            }
+
         }
 
         private void colorClick(object sender, EventArgs e)
@@ -250,28 +283,38 @@ namespace PaintApp
         //(this is the eventhandler for the 'tools' appbutton
         private void fillClick(object sender, EventArgs e)
         {
-            toolState = (toolState + 1) % 3;
+            toolState = (toolState + 1) % 4;
             ApplicationBarIconButton b = (ApplicationBarIconButton)ApplicationBar.Buttons[1];
-            switch(toolState)
+            switch (toolState)
             {
                 case 0:
                     b.IconUri = new Uri("/Images/edit.png", UriKind.Relative);
                     b.Text = "Pen";
-                    makeToast("Pen Mode", "", 500, "/Images/edit.png");
+                    makeToast("Pen Mode", "");
                     break;
+                    
                 case 1:
                     b.IconUri = new Uri("/Images/beer.png", UriKind.Relative);
                     b.Text = "Fill";
-                    makeToast("Fill Mode", "", 500, "/Images/beer.png");
+                    makeToast("Fill Mode", "");
                     break;
+                    
                 case 2:
                     b.IconUri = new Uri("/Images/questionmark.png", UriKind.Relative);
-                    b.Text = "Sample";
-                    makeToast("Color Sampling Mode", "", 500, "Images/questionmark.png");
+                    b.Text = "Query";
+                    makeToast("Color Sampling Mode", "");
                     break;
+                case 3:
+                    b.IconUri = new Uri("/Images/circle.png", UriKind.Relative);
+                    b.Text = "Ellipse";
+                    makeToast("Circle Mode", " - tap twice");
+                    break;
+
             }
-            
+
         }
+
+
 
         //Clear Button
         private void clearClick(object sender, EventArgs e)
