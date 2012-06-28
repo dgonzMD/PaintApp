@@ -20,7 +20,7 @@
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>PocketPaint.xap</XapFilename>
+    <XapFilename>PaintPP.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <SilverlightAppEntry>PaintApp.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
@@ -103,22 +103,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\AppManifest.xml" />
+    <None Include="Properties\AppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ApplicationI.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Images\173appicon.png" />
-    <Resource Include="Images\200appicon.png" />
-    <Resource Include="Images\62appicon.png" />
-    <Resource Include="Images\99appicon.png" />
+    <Content Include="Images\circle.png" />
     <Content Include="Images\back.png" />
     <Content Include="Images\questionmark.png" />
     <Content Include="Images\brush.png" />
@@ -126,7 +122,7 @@
     <Content Include="Images\check.png" />
     <Content Include="Images\delete.png" />
     <Content Include="Images\edit.png" />
-    <Resource Include="ApplicationIcon.png" />
+    <Resource Include="ppp.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>

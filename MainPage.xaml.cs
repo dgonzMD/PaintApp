@@ -13,6 +13,7 @@ using Microsoft.Phone.Tasks;
 using System.IO;
 using Microsoft.Xna.Framework.Media;
 using Coding4Fun.Phone.Controls;
+using Microsoft.Phone;
 
 namespace PaintApp
 {
@@ -28,6 +29,7 @@ namespace PaintApp
         private WriteableBitmap undoBm = null;
         private LinkedList<WriteableBitmap> undoList = new LinkedList<WriteableBitmap>();
         private int maxUndos = 50;
+        private CameraCaptureTask ctask;
 
         // Constructor
         public MainPage()
@@ -38,6 +40,43 @@ namespace PaintApp
 
             pct = new PhotoChooserTask();
             pct.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            ctask = new CameraCaptureTask();
+            ctask.Completed += new EventHandler<PhotoResult>(ctask_Completed);
+        }
+
+        void ctask_Completed(object sender, PhotoResult e)
+        {
+
+            if (e.TaskResult == TaskResult.OK && e.ChosenPhoto != null)
+            {
+                bm = new WriteableBitmap(canvas1, null);
+
+                int width = bm.PixelWidth;
+                int height = bm.PixelHeight;
+
+                //Take JPEG stream and decode into a WriteableBitmap object
+                bm = PictureDecoder.DecodeJpeg(e.ChosenPhoto, height, width);
+                bm = bm.Rotate(1);
+                //Collapse visibility on the progress bar once writeable bitmap is visible.
+                //progressBar1.Visibility = Visibility.Collapsed;
+
+
+                //Populate image control with WriteableBitmap object.
+                bm.Invalidate();
+                updateCanvasFromWBM(bm);
+
+                //Once writeable bitmap has been rendered, the crop button
+                //is enabled.
+                //btnCrop.IsEnabled = true;
+
+                //textStatus.Text = "Tap the crop button to proceed";
+                makeToast("Success!", "Loaded picture");
+            }
+            else
+            {
+                makeToast("Uh oh", "Couldn't load picture");
+            }
         }
 
         private void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -145,6 +184,7 @@ namespace PaintApp
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
                 border2.Background = Globals.scb;
                 makeToast("Color Sampled", "");
+                fillClick(null, null); //to move to pencil mode
                 //NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
             }
         }
@@ -152,6 +192,7 @@ namespace PaintApp
         private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             canvas1.ReleaseMouseCapture();
+            if(toolState==0)
             activelyDrawing = false;
         }
 
@@ -199,6 +240,38 @@ namespace PaintApp
                 
                 makeToast("Bucket Applied -", string.Format(" {0}ms", elapsedTime.TotalMilliseconds), 500);
             }
+            if (toolState == 3)
+            {
+
+                if (!activelyDrawing)
+                {
+                    prev_p.x = (short)e.GetPosition(canvas1).X;
+                    prev_p.y = (short)e.GetPosition(canvas1).Y;
+                    activelyDrawing = true;
+                }
+                else
+                {
+                    short tx = prev_p.x;
+                    short ty = prev_p.y;
+                    cur_p.x = (short)e.GetPosition(canvas1).X;
+                    cur_p.y = (short)e.GetPosition(canvas1).Y;
+                    Size s = new Size();
+                    s.Height = (int)Math.Abs(cur_p.y -ty);
+                    s.Width = (int)Math.Abs(cur_p.x - tx);
+                    System.Diagnostics.Debug.WriteLine(s.Height + " " + s.Width);
+                    Point o = new Point(Math.Min(cur_p.x, tx), Math.Min(cur_p.y, ty));
+                    Ellipse tempRect = new Ellipse() { Width = s.Width, Height = s.Height };
+                    tempRect.Margin = new Thickness(o.X, o.Y, 0, 0);
+                    tempRect.Stroke = new SolidColorBrush(Globals.scb.Color);
+                    tempRect.StrokeThickness = Globals.brushSize;
+                    tempRect.StrokeStartLineCap = Globals.plc;
+
+                    updateUndoList();
+                    this.canvas1.Children.Add(tempRect);
+                    activelyDrawing = false;
+                }
+            }
+
         }
 
         private void colorClick(object sender, EventArgs e)
@@ -210,28 +283,38 @@ namespace PaintApp
         //(this is the eventhandler for the 'tools' appbutton
         private void fillClick(object sender, EventArgs e)
         {
-            toolState = (toolState + 1) % 3;
+            toolState = (toolState + 1) % 4;
             ApplicationBarIconButton b = (ApplicationBarIconButton)ApplicationBar.Buttons[1];
-            switch(toolState)
+            switch (toolState)
             {
                 case 0:
                     b.IconUri = new Uri("/Images/edit.png", UriKind.Relative);
                     b.Text = "Pen";
-                    makeToast("Pen Mode", "", 500, "/Images/edit.png");
+                    makeToast("Pen Mode", "");
                     break;
+                    
                 case 1:
                     b.IconUri = new Uri("/Images/beer.png", UriKind.Relative);
                     b.Text = "Fill";
-                    makeToast("Fill Mode", "", 500, "/Images/beer.png");
+                    makeToast("Fill Mode", "");
                     break;
+                    
                 case 2:
                     b.IconUri = new Uri("/Images/questionmark.png", UriKind.Relative);
-                    b.Text = "Sample";
-                    makeToast("Color Sampling Mode", "", 500, "Images/questionmark.png");
+                    b.Text = "Query";
+                    makeToast("Color Sampling Mode", "");
                     break;
+                case 3:
+                    b.IconUri = new Uri("/Images/circle.png", UriKind.Relative);
+                    b.Text = "Ellipse";
+                    makeToast("Circle Mode", " - tap twice");
+                    break;
+
             }
-            
+
         }
+
+
 
         //Clear Button
         private void clearClick(object sender, EventArgs e)
@@ -279,6 +362,11 @@ namespace PaintApp
             pct.Show();
         }
 
+        private void pictureClick(object sender, EventArgs e)
+        {
+            ctask.Show();
+        }
+
         //From http://en.wikipedia.org/wiki/Hue
         private double sqrt3 = Math.Sqrt(3.0);
         private double getHue(Color a)
@@ -298,7 +386,7 @@ namespace PaintApp
             return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
         }
 
-        private void flood3(int p, int replacementColor, int targetColor)
+        private void flood3(int p, int replacementColor, int targetColor) //Scanline algorithm
         {
             if (replacementColor == targetColor) return;
 
@@ -335,90 +423,6 @@ namespace PaintApp
 
                     if (a + bm.PixelWidth < pixelCt && img[a + bm.PixelWidth] == targetColor) //down
                         q.Enqueue(a + bm.PixelWidth);
-                }
-            }
-
-            return;
-        }
-
-        //Initial scanline implementation, now deprecated to flood3
-        private void flood2(iPoint p, Color replacementColor, Color targetColor)
-        {
-            if (replacementColor == targetColor) return;
-
-            Queue<iPoint> q = new Queue<iPoint>();
-            q.Enqueue(p);
-
-            //bm.Lock(); 
-            while (q.Count > 0)
-            {
-                iPoint c = q.Dequeue();
-                if (bm.GetPixel(c.x, c.y) != targetColor) continue;
-
-                for (short a = (short)c.x; a >= 0 && bm.GetPixel(a, c.y) == targetColor; --a)
-                {
-                    bm.SetPixel(a, c.y, replacementColor);
-
-                    if (c.y > 0 && bm.GetPixel(a, c.y - 1) == targetColor) //up
-                        q.Enqueue(new iPoint(a, (short)(c.y - 1)));
-
-                    if (c.y + 1 < bm.PixelHeight && bm.GetPixel(a, c.y + 1) == targetColor) //down
-                        q.Enqueue(new iPoint(a, (short)(c.y + 1)));
-                }
-
-                for (short b = (short)(c.x + 1); b < bm.PixelWidth && bm.GetPixel(b, c.y) == targetColor; ++b)
-                {
-                    bm.SetPixel(b, c.y, replacementColor);
-
-                    if (c.y > 0 && bm.GetPixel(b, c.y - 1) == targetColor) //up
-                        q.Enqueue(new iPoint(b, (short)(c.y - 1)));
-
-                    if (c.y + 1 < bm.PixelHeight && bm.GetPixel(b, c.y + 1) == targetColor) //down
-                        q.Enqueue(new iPoint(b, (short)(c.y + 1)));
-                }
-            }
-
-            return;
-        }
-
-
-        //UPDATE: This is now deprecated, we now use a scanline algorithm to fill
-        //Floodfill algorithm used in fill
-        private void flood(iPoint p, Color fillColor, Color interiorColor)
-        {
-            if (fillColor == interiorColor) return;
-
-            Queue<iPoint> q = new Queue<iPoint>();
-            q.Enqueue(p);
-            bm.SetPixel(p.x, p.y, fillColor);
-
-            short[] di = { -1, 0, 0, 1 };
-            short[] dj = { 0, 1, -1, 0 };
-
-            //double tHue = getHue(interiorColor);
-            //double tSaturation = getSaturation(interiorColor);
-            //double tLuminance = getLuminance(interiorColor);
-            //double tolerance = 400.0;
-
-            while (q.Count > 0)
-            {
-                p = q.Dequeue();
-
-                for (int i = 0; i < 4; i++)
-                {
-                    short x = (short)(p.x + di[i]);
-                    short y = (short)(p.y + dj[i]);
-
-                    if (x >= 0 && x < bm.PixelWidth && y >= 0 && y < bm.PixelHeight)
-                    {
-                        Color cur = bm.GetPixel(x, y);
-                        if (cur == fillColor) continue;
-                        if (interiorColor == cur /*colorDist(tHue, tLuminance, getHue(cur), getLuminance(cur)) < tolerance*/)
-                        {
-                            q.Enqueue(new iPoint(x, y));
-                            bm.SetPixel(x, y, fillColor);
-                        }
-                    }
                 }
             }
 

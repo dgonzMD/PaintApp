@@ -23,7 +23,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Margin="0,0,0,63" Grid.RowSpan="2">
-            <my:AdControl AdUnitId="90168" ApplicationId="702bf6a3-38bf-4b98-93e0-5aa77f88a4df" Height="80" Name="adControl1" Width="480" Margin="0,0,0,20" />
+            
             <Rectangle Height="50" Width="383" Name="colorRect" StrokeThickness="0" />
             <c4fToolkit:ColorPicker Name="picker" Height="383" Width="383" Margin="0" ColorChanged="picker_ColorChanged" />
             <Grid Height="170" Name="grid1" Width="467">

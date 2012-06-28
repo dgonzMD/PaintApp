@@ -14,11 +14,13 @@ namespace PaintApp
             brushText.Text=string.Format("Brush Size: {0}", slider1.Value);
             colorRect.Fill = Globals.scb;
         }
+
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             picker.Color = Globals.scb.Color;
             slider1.Value = Globals.brushSize;
         }
+
         private void picker_ColorChanged(object sender, Color color)
         {
             Globals.scb = new SolidColorBrush(color);
