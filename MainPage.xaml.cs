@@ -184,7 +184,8 @@ namespace PaintApp
                 Globals.scb.Color = bm.GetPixel((int)e.GetPosition(canvas1).X, (int)e.GetPosition(canvas1).Y);
                 border2.Background = Globals.scb;
                 makeToast("Color Sampled", "");
-    //            fillClick(null, null); //to move to pencil mode
+                toolState++;
+                fillClick(null, null); //to move to pencil mode
                 //NavigationService.Navigate(new Uri("/ColorPicker.xaml", UriKind.Relative));
             }
         }
